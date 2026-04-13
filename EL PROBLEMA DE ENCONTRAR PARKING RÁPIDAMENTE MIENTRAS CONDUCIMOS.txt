@@ -1,0 +1,427 @@
+﻿EL PROBLEMA DE ENCONTRAR PARKING RÁPIDAMENTE MIENTRAS CONDUCIMOS
+
+
+Jose Palacios, Javier Olozaga, Alejandro Gómez
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ÍNDICE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ÍNDICE
+
+
+1. ENTENDER
+*   Contexto elegido
+*   Round Robin
+*   Experiencias autobiográficas
+*   Justificación de interacción no-touch (sin contacto físico) en el contexto de conductor buscando aparcamiento
+
+
+2. DEFINIR
+*   EXPERIENCE MAP
+*   HMW
+
+
+3. IDEAR
+*   FOTOS DE LOS CRAZY 8S
+
+
+4. Bodystorming
+
+
+5. Evidencias de convergencia + Matriz impacto vs viabilidad
+*   5.1 Objetivo de la convergencia
+*   5.2 Alternativas consideradas
+*   5.3 Criterios de decisión
+*   5.4 Técnica de convergencia utilizada: Dot Voting
+*   Resultados
+*   Interpretación
+*   Evidencia
+*   Matriz Impacto vs Viabilidad
+
+
+6. Storyboard.
+
+
+6. Declaración de IA.
+
+
+7. Reflexión final.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Introducción
+En esta primera fase del proyecto abordamos un problema cotidiano: encontrar aparcamiento rápidamente mientras conducimos, especialmente cuando vamos con prisa y la búsqueda en la calle falla, lo que nos lleva a entrar en parkings con incertidumbre sobre la disponibilidad y con posibles atascos internos.Este contexto genera frustración por el tiempo perdido, la incertidumbre y el tráfico interno provocado por múltiples conductores buscando plaza simultáneamente.
+1.ENTENDER
+Contexto elegido
+Elegimos este contexto porque es una situación cotidiana que nos ocurre con frecuencia (o nos ha ocurrido repetidamente) y que genera frustración real: dar vueltas, entrar en un parking sin saber si hay plazas, sufrir tráfico interno y salir habiendo perdido tiempo.
+Además, este contexto tiene restricciones muy claras que justifican una interacción no-touch: durante la conducción y las maniobras en un parking, el Conductor tiene las manos ocupadas, la atención visual en el entorno (peatones, coches, señalización) y un entorno dinámico donde mirar/tocar el móvil aumenta el riesgo. Esto hace natural diseñar interacción mediante voz y gestos en lugar de pantalla táctil.
+Round Robin
+Realizamos un Round Robin donde cada miembro del grupo compartió una experiencia personal relacionada con la búsqueda de aparcamiento. Cada historia permitió identificar patrones comunes (prisa, incertidumbre, tráfico interno, pérdida de tiempo) y, tras comparar situaciones, acordamos que el problema del aparcamiento en parkings era el contexto más repetido y con mayor potencial de mejora.
+Experiencias autobiográficas
+Javier Olozaga
+En varias ocasiones he ido con prisa al gym y no he encontrado sitio en la calle. Al final acabo entrando en un parking por probar, pero sin saber si hay plazas. Dentro, el tráfico interno y los coches cruzándose me hacen perder aún más tiempo. Cuando resulta que estaba lleno salir también es lento y frustrante, y acabo llegando tarde y sintiéndome fatal.
+Alejandro Gómez
+Me ha pasado entrar a un parking pensando que habría sitio y, mientras buscaba, ver cómo otro coche se mete delante y ocupa una plaza que parecía libre. Ese momento genera mucha tensión porque tienes que reaccionar rápido, maniobrar, y al mismo tiempo no puedes ponerte a buscar alternativas en el móvil. La sensación final es que he perdido tiempo y energía para nada.
+Jose
+He vivido situaciones en las que, por no saber si un parking está lleno, entro y me quedo atrapado en pasillos estrechos con más coches buscando plaza. Se forman pequeños atascos internos y salir se convierte en una pérdida de minutos extra. Esa repetición (buscar , entrar, comprobar que no hay y después salir) aumenta la frustración y hace que el proceso sea muy estresante.
+Justificación de interacción no-touch (sin contacto físico) en el contexto de conductor buscando aparcamiento
+En esta situación, el uso de interacción tradicional basada en tocar el móvil / teclado / pantalla no es adecuado porque el contexto impone restricciones físicas, de seguridad y de atención:
+1-Manos ocupadas + control del vehículo
+El Conductor necesita mantener ambas manos disponibles para el volante, cambios y maniobras finas, especialmente al entrar en un parking (espacios estrechos, giros, rampas). Manipular una pantalla requiere soltar el control o adoptar posturas incómodas, aumentando el riesgo.
+2-Seguridad: la vista debe estar en la carretera
+En la fase de búsqueda y en el interior del parking, la atención visual debe centrarse en:
+* peatones, coches cruzándose
+* señalización
+* huecos y maniobras
+ Mirar hacia una pantalla para leer o pulsar botones provoca desvíos de atención en momentos críticos.
+3-Contexto dinámico y estresante (tiempo real)
+Los Pain Points identificados (incertidumbre, tráfico interno, tiempo perdido) ocurren en momentos en los que el contexto cambia rápido: un coche se mete, aparece un hueco, se bloquea un pasillo. En ese tipo de decisiones rápidas, “pararse a tocar una app” introduce fricción y empeora el problema.
+4-Fricción de uso (micro-interacciones repetidas)
+Para obtener información útil normalmente habría que:
+desbloquear móvil , abrir app , buscar parking , confirmar ruta/estado…
+Esa cadena de micro-acciones, repetida, es justo lo que genera frustración cuando tienes prisa. Nuestro diseño reduce esa carga usando comandos cortos de voz y gestos simples.
+5-Entorno con restricciones físicas
+Dentro del parking se producen:
+* iluminación irregular,
+* vibraciones del coche,
+* ruido,
+* maniobras a baja velocidad.
+Todo esto hace menos fiable y más incómodo interactuar “a dedos” con una pantalla.
+Conclusión:
+Dado que el Conductor está en una tarea de alta carga atencional y manos ocupadas, el sistema debe permitir interacción sin contacto: voz (comandos cortos) y gestos discretos (confirmar/cancelar) como mecanismo principal.
+2.DEFINIR
+
+
+EXPERIENCE MAP
+
+
+1. Conductor va conduciendo por la calle y le surge la necesidad de aparcar.
+   * Pensamiento: “Tengo que dejar el coche ya.”
+   * Emoción: neutral ,empieza tensión.
+
+   1. Busca sitio en la calle pero no encuentra.
+   * Pensamiento: “¿En serio no hay ni uno?”
+   * Emoción: sube el estrés.
+
+      2. Tiene prisa y no puede perder tiempo dando vueltas.
+      * P.P.1 Momento en que empieza a agobiarse por el tiempo que está perdiendo.
+
+         3. Decide aparcar en un parking.
+         * Pensamiento: “Vale, parking y ya está.”
+         * Emoción: alivio momentáneo.
+
+            4. No sabe dónde hay un parking cercano (o cuál le conviene).
+            * P.P.2 Momento en que necesita elegir parking pero no tiene información rápida y clara.
+
+               5. Encuentra un parking y entra.
+               * Pensamiento: “Espero que haya sitio.”
+               * Emoción: incertidumbre.
+
+                  6. No sabe si hay plazas libres antes de meterse del todo.
+                  * P.P.3 Momento de incertidumbre: entrar puede ser perder tiempo si está lleno.
+
+                     7. Dentro del parking, cree ver un hueco / se dirige a una zona, pero otro coche aparca justo delante o se cruza.
+                     * P.P.4 Momento en que aparece tráfico interno y se bloquea el avance.
+
+                        8. Finalmente comprueba que realmente no hay más sitio.
+                        * P.P.5 Momento en que se confirma que el esfuerzo dentro del parking ha sido tiempo perdido.
+
+                           9. Intenta salir, pero tarda mucho porque hay más coches buscando plaza y se generan atascos internos.
+                           * P.P.6 Momento en que el tráfico interno retrasa la salida y aumenta el estrés.
+
+                              11. Sale del parking y repite el proceso con otro.
+                              * P.P.7 Momento en que la repetición del ciclo (buscar–entrar–ver que no hay–salir) genera frustración.
+
+                                 12. Llega tarde.
+                                 * Emoción final: frustración.
+
+
+HMW
+
+
+
+
+Pain Point 1: Empiezas a agobiarte (tienes prisa):
+
+
+                                 * ¿Cómo podríamos permitir que el conductor solicite ayuda sin dejar de conducir usando solo su voz?
+
+                                 * ¿Cómo podríamos detectar automáticamente que el conductor tiene prisa mediante el movimiento del coche?
+
+                                 * ¿Cómo podríamos permitir que el conductor active un “modo urgente” usando un gesto con el coche (por ejemplo, doble intermitente)?
+
+
+Pain Point 2: No sé dónde hay un parking:
+
+
+                                    * ¿Cómo podríamos permitir al conductor preguntar por parkings cercanos sin tocar el móvil?
+
+                                    * ¿Cómo podríamos detectar que un coche circula lentamente buscando aparcamiento y ofrecerle información automáticamente?
+
+                                    * ¿Cómo podríamos mostrar disponibilidad solo cuando el coche se aproxima físicamente a una zona?
+
+
+Pain Point 3: Incertidumbre (no sé si hay sitio):
+
+
+                                       * ¿Cómo podríamos permitir que el conductor confirme disponibilidad usando señales del coche (luces/intermitentes)?
+
+                                       * ¿Cómo podríamos comunicar al conductor la disponibilidad sin que tenga que bajarse del coche ni mirar una pantalla?
+
+                                       * ¿Cómo podríamos hacer que el parking responda automáticamente al detectar un coche aproximándose?
+ 
+Pain Point 4 y 6: Tráfico interno (alguien aparca antes que tú y pierdes tiempo en salir):
+                                          * ¿Cómo podríamos guiar al conductor mediante señales luminosas activadas por proximidad?
+
+                                          * ¿Cómo podríamos reservar temporalmente una plaza cuando el conductor confirme con un gesto del vehículo?
+
+                                          * ¿Cómo podríamos evitar conflictos entre coches usando comunicación basada en movimiento?
+Pain Point 5: Tiempo perdido (no hay más sitio):
+
+
+                                             * ¿Cómo podríamos impedir físicamente la entrada cuando no hay plazas disponibles?
+
+                                             * ¿Cómo podríamos comunicar por voz desde la entrada que el parking está completo?
+
+                                             * ¿Cómo podríamos detectar automáticamente la ocupación sin necesidad de que el usuario consulte una app?
+
+
+Pain Point 7: Frustración final / Llegas tarde:
+
+
+                                                * ¿Cómo podríamos permitir que el conductor interactúe con el entorno urbano sin tocar dispositivos mientras conduce?
+
+                                                * ¿Cómo podríamos hacer que el parking entienda la intención del conductor mediante su comportamiento de conducción?
+
+                                                * ¿Cómo podríamos transformar el coche en un dispositivo de entrada para el sistema del parking?
+3.IDEAR
+FOTOS DE LOS CRAZY 8S
+  
+
+  
+
+  
+
+4.Bodystorming
+Durante el bodystorming simulamos la conducción en un coche con el objetivo de validar una interacción no-touch y comprobar qué modalidades (voz vs gestos) resultan más seguras y naturales en este contexto. La principal restricción es que el Conductor debe mantener las manos en el volante y la atención en el entorno (señalización, coches, maniobras), por lo que cualquier interacción que requiera manipular una pantalla o desviar la mirada aumenta el riesgo y la carga cognitiva.
+Probamos comandos por voz (ej.“buscar aparcamiento”, “modo urgente”, “confirmar/cancelar”) y también gestos simples (ej. confirmar(pulgar arriba), cancelar(mano extendida)). Observamos que la voz permite mantener el control del vehículo sin cambiar la postura ni apartar las manos del volante, reduciendo distracciones y haciendo la interacción más fluida en un contexto dinámico.
+En cambio, aunque los gestos son “sin contacto” y pueden evitar tocar el móvil, comprobamos que siguen implicando separar al menos una mano del volante, lo que no queremos permitir en una situación de conducción/maniobra. Por este motivo, decidimos que la interacción principal del sistema será por voz, y que los gestos se descartan para el flujo principal (o se reservan como alternativa solo en situaciones estáticas, por ejemplo cuando el coche está detenido).
+Resultado: el bodystorming refuerza que el diseño debe priorizar voz como modalidad no-touch en conducción para minimizar distracción y mantener las manos en el volante.El bodystorming no solo validó el no-touch, sino que nos ayudó a decidir que, en conducción, “no-touch” no es suficiente: también debe ser con manos al volante’, por lo que priorizamos voz. bodystorming
+Comprobamos que los gestos son validos, pero nos hemos dado cuenta que es mejor usar la voz para confirmar o parar cosas, ya que asi mantenemos ambas manos al volante y mas seguridad.
+  
+
+
+
+Simulamos la activación de luces largas como gesto de confirmación mientras manteníamos ambas manos en el volante. A diferencia de otros gestos manuales (como levantar la mano o hacer señales visibles), este gesto se realiza con la palanca integrada en la columna de dirección, por lo que no implica soltar el volante ni modificar la postura corporal.
+Comprobamos que:
+                                                   * El movimiento es breve y natural, ya que es una acción habitual en conducción.
+
+                                                   * No requiere desviar la mirada.
+
+                                                   * No genera vergüenza social ni resulta extraño en un contexto de parking.
+
+                                                   * Tiene baja carga cognitiva (doble destello = confirmar).
+
+Además, al tratarse de un patrón específico (por ejemplo, doble ráfaga en menos de 2 segundos), el sistema puede diferenciarlo de un uso normal de luces.
+Aunque priorizamos la voz como modalidad principal durante la conducción, el uso de luces largas como confirmación es viable porque cumple la restricción de “manos en el volante” y no aumenta el riesgo ni la distracción. Se valida como gesto complementario seguro en el flujo de interacción.
+  
+
+
+
+ En este caso, el conductor forma un 3 con los dedos de la mano y lo muestra hacia la cámara del sistema como confirmación explícita de que quiere reservar la plaza propuesta. Este gesto activa una reserva de 3 minutos, reforzando el vínculo directo entre la forma del gesto (3 dedos) y la duración de la reserva, lo que lo hace fácil de recordar y explicar a otros usuarios.
+Aunque durante la conducción seguimos priorizando la voz y las luces largas para mantener las manos en el volante, este gesto de 3 se plantea como una interacción complementaria pensada para momentos de menor carga, donde el conductor puede permitirse una micro-interacción visual con la cámara sin comprometer la seguridad.
+  
+
+
+
+5. Evidencias de convergencia + Matriz impacto vs viabilidad
+5.1 Objetivo de la convergencia
+Tras la fase de ideación (Crazy 8s) y la validación física (bodystorming), realizamos una fase de convergencia para seleccionar la propuesta final que:
+                                                      * resuelva los pain points principales (incertidumbre, tiempo perdido, tráfico interno),
+                                                      * sea no-touch en el contexto de conducción,
+                                                      * y mantenga un alto grado de viabilidad para prototiparse.
+5.2 Alternativas consideradas
+A partir de los Crazy 8s seleccionamos estas ideas candidatas:
+                                                      * Idea A — Modo urgente por voz + recomendación de parking con plazas
+ El conductor activa “modo urgente” por voz y el sistema recomienda el parking más conveniente con disponibilidad.
+                                                      * Idea B — Panel/semáforo de ocupación en la entrada
+ Antes de entrar, el parking comunica claramente si hay plazas (verde/amarillo/rojo) evitando entrar “a ciegas”.
+                                                      * Idea C — Cola virtual cuando el parking está completo
+ En vez de entrar y generar tráfico interno, el sistema asigna un turno (#) y regula la entrada.
+                                                      * Idea D — Guía interna / rutas separadas para reducir atascos
+ El sistema distribuye a los conductores por rutas/pasillos distintos para reducir conflictos y congestión.
+                                                      * Idea E — Reserva temporal de plaza
+ Reservar plaza durante un tiempo corto para evitar que otro coche la ocupe antes.
+                                                      * Idea F — Distribución inteligente multiusuario entre parkings                                Si el sistema redirige a varios coches hacia un mismo parking, registra esa “demanda entrante” y, cuando otros conductores pidan aparcamiento después, les redirige a otro parking alternativo para evitar saturar el mismo y reducir tráfico interno..
+5.3 Criterios de decisión
+Para comparar alternativas utilizamos dos ejes:
+                                                         * Impacto: cuánto reduce los PP (especialmente PP3–PP7: incertidumbre, tiempo perdido, tráfico interno, frustración)
+                                                         * Viabilidad: facilidad de prototipado sin hardware extra, coherencia con interacción no-touch y complejidad técnica (simulación realista en un prototipo)
+5.4 Técnica de convergencia utilizada: Dot Voting
+Aplicamos dot voting para escoger la base de la solución final:
+Proceso
+                                                         1. Colocamos las 6 ideas (A-F) en una pantalla.
+                                                         2. Cada miembro tuvo 3 votos (puntos) para repartir libremente entre las ideas.
+                                                         3. Sumamos los votos totales y seleccionamos como base la idea más votada, incorporando elementos de otras ideas si aportaban impacto sin bajar la viabilidad.
+
+Resultados 
+                                                            * Idea A: 3 votos
+                                                            * Idea B: 1 votos
+                                                            * Idea C: 0 votos
+                                                            * Idea D: 0 votos
+                                                            * Idea E: 3 votos
+                                                            * Idea F: 2 votos
+
+Interpretación
+ Las ideas con mayor apoyo fueron las ideas A y E, por su alta alineación con la restricción principal (“manos al volante”) y porque reduce el problema desde el inicio (decidir rápido dónde ir). Las ideas B y C se valoraron como complementos directos para reducir incertidumbre y evitar entradas innecesarias. D aporta impacto, pero requiere más complejidad de prototipo. F se considera una buena opción y muy util.
+
+
+Evidencia
+  
+
+Matriz Impacto vs Viabilidad
+Tras realizar el dot voting, complementamos la decisión con una matriz de Impacto vs Viabilidad. Definimos impacto como la capacidad de reducir incertidumbre, tiempo perdido y tráfico interno (PP3–PP7), y viabilidad como la facilidad de prototipado manteniendo interacción no-touch y coordinación multiusuario.
+En la matriz situamos A y F en el cuadrante de alto impacto y alta viabilidad, ya que permiten resolver el problema desde el inicio mediante interacción por voz y además distribuyen inteligentemente a varios conductores entre distintos parkings, evitando saturación.
+La idea E presenta alto impacto, ya que reduce conflictos directos entre coches mediante una reserva temporal, aunque su viabilidad es media al requerir un mecanismo de confirmación seguro durante la conducción.
+Por ello, decidimos combinar las ideas A, E y F como solución integrada, manteniendo alto impacto y viabilidad para el prototipo.
+  
+
+
+
+
+
+
+
+6. Storyboard.
+  
+
+Para sintetizar el recorrido del usuario y verificar que la solución propuesta encaja con los pain points detectados, elaboramos un storyboard que representa la experiencia completa del conductor desde que empieza a agobiarse buscando aparcamiento hasta que confirma y reserva una plaza. En la primera viñeta se muestra al conductor circulando por la ciudad, sin encontrar sitio en la calle y con la sensación de ir justo de tiempo, lo que conecta directamente con los momentos de tensión e incertidumbre identificados en el experience map. En la segunda escena, el conductor activa el sistema mediante un comando de voz (“buscar aparcamiento”), evitando tener que manipular el móvil y respetando así la restricción de mantener las manos en el volante y la atención en la vía. A continuación, el storyboard ilustra cómo el sistema guía al usuario hacia un parking con disponibilidad, comunicando por voz y en la pantalla del vehículo el destino seleccionado y reduciendo la incertidumbre de “entrar a ciegas” en un parking que podría estar lleno.
+En las últimas viñetas, el sistema informa de una plaza concreta libre y solicita una confirmación no‑touch para reservarla temporalmente; el conductor confirma también mediante la voz (por ejemplo, diciendo “reservar plaza” o “confirmar”), tras lo cual el sistema bloquea la plaza durante un breve intervalo para que pueda llegar sin competir con otros coches. Este storyboard nos sirve como validación visual de la ecología de dispositivos y de las modalidades de interacción elegidas, y demuestra cómo el sistema responde a los problemas iniciales de tiempo perdido, tráfico interno y estrés del conductor de una forma coherente con el diseño centrado en el contexto de conducción.
+
+
+6. Declaración de IA.
+Hemos utilizado la inteligencia artificial durante la realización de este trabajo durante dos puntos claves del desarrollo. El primero fue en la fase de pensar en un problema que pudiéramos dar soluciones ubicuas y para de revisar bien el mapa del problema y que no se nos olvidarán puntos importantes. El segundo punto del desarrollo del proyecto donde la IA nos ha sido de gran utilidad ha sido al hacer el storyboard, ya que se hace tan simple como explicarle el problema y el flujo de actuación y te da el storyboard bastante bien ilustrado para que sea entendible y visualmente agradable.
+
+
+7.Reflexión final.
+Este proyecto nos ha servido para comprobar en la práctica lo difícil que es diseñar interacciones realmente adecuadas para un conductor que va con prisa y bajo presión. El experience map nos ayudó a entender que la frustración del conductor no viene solo de encontrar o no encontrar plaza, sino de la suma de incertidumbre, tiempo perdido y tráfico interno que se encadenan en momentos de alta carga atencional. A partir de ahí, el proceso de ideación, bodystorming y convergencia nos permitió traducir esos pain points en decisiones de diseño muy concretas: priorizar la voz frente a la pantalla táctil, utilizar gestos integrados en el propio vehículo y proponer mecanismos como la reserva temporal de plaza para reducir conflictos entre conductores. El storyboard nos ha servido para validar que la solución resultante tiene sentido de principio a fin desde la perspectiva del usuario, y que la ecología de dispositivos se coordina para aliviar, y no añadir, más complejidad a la situación.

@@ -1,0 +1,118 @@
+﻿Sistemas Interactivos y Ubicuos. Grado en Ingeniería Informática.  
+
+
+Introducción
+El proyecto de la asignatura sigue el recorrido de un proceso de diseño influido por el enfoque y técnicas de Design Thinking / Design Sprint para definir la estrategia y el diseño de vuestro sistema ubicuo.
+
+
+El proyecto culmina con el diseño de un sistema interactivo que utilice gestos, movimientos del cuerpo y comandos de voz como principales mecanismos de interacción, integrando múltiples dispositivos y pantallas.
+
+
+Este proyecto será desarrollado a lo largo de la asignatura, y se evaluará en tres fases, a través de tres entregables: 
+* P1 (Entender, Definir, Idear, Decidir), 
+* P2 (Prototipar), 
+* P3 (Validar).
+
+
+P1. Empatizar, definir, idear
+  
+
+Este entregable se centra en las primeras 4 fases del proceso de diseño definido por el Design Sprint Kit de Google, que va desde la identificación del contexto de diseño para el que se va a diseñar, a la generación de posibles ideas de diseño, que luego se prototiparán (P2) y se validarán (P3). 
+Esta fase (P1) dura aproximadamente tres semanas, en las cuales: 
+1. (Entender) Se alinea al equipo sobre el contexto y el problema.
+2. (Definir) Se enmarca el problema técnico y de diseño.
+3. (Idear) Se generan soluciones detalladas (trabajo individual y puesta en común).
+4. (Decidir) Se seleccionan las ideas para los prototipos (P2).
+Objetivos y tareas
+El grupo deberá realizar y documentar las siguientes actividades:
+
+
+1. FASE 1: ENTENDER (Understand)
+   1. Actividad 1.1: Round Robin.
+      1. Cada miembro expone una situación cotidiana 
+      2. Seleccionad un único contexto para el proyecto.
+   2. Actividad 1.2: Experience Map.
+      1. Cread un diagrama visual que muestre el flujo actual del usuario en ese contexto sin vuestra solución. Identificad los puntos de dolor (Pain Points), es decir los problemas o los momentos exactos de fricción. Ejemplo: "Momento en que tengo que secarme las manos para tocar la pantalla".
+
+
+2. FASE 2: DEFINIR (Define)
+   1. Actividad 2.1: Preguntas "How Might We" (HMW).
+      1. Convertid los "Pain Points" del mapa en oportunidades. Requisito: Las preguntas HMW deben sugerir restricciones físicas que obliguen al uso de computación ubicua (voz, gestos, proximidad).
+         1.  Ejemplo válido: "¿Como podríamos controlar la receta sin tocar nada con las manos sucias?" 
+         2. Ejemplo inválido: "¿Como podríamos hacer una app de cocina?"
+
+
+3. FASE 3: IDEAR (Sketch)
+   1. Actividad 3.1: Crazy 8s.
+      1. Cada miembro dobla un folio en 8 partes y dibuja 8 variaciones rápidas de interacción en 8 minutos. Priorizamos cantidad sobre calidad.
+   2. Actividad 3.2: Bodystorming (Validación Física). 
+      1. Antes de decidir, debéis "actuar" los gestos o comandos de voz de vuestros Crazy 8s. ¿Es cansado? ¿Es ridículo hacerlo en público? Descartad lo que no funcione físicamente.
+   3. Actividad 3.3: Solution Sketch (Boceto de Solución).
+      1. Cada miembro selecciona su mejor idea y crea un boceto detallado de 3 paneles (Problema -> Interacción -> Resultado) que se explique por sí solo. 
+
+
+4. FASE 4: DECIDIR (Decide)
+   1. Actividad 4.1: Técnica de Convergencia (A elección del grupo). El grupo debe aplicar (y documentar en la memoria) una técnica de decisión del Design Sprint Kit para seleccionar las mejores ideas o fragmentos de ideas generadas en la fase anterior. Por ejemplo: 
+      1. Heat Map Voting, Note-and-Vote, o Dot-Voting
+   2. Actividad 4.2: (Decision Matrix) Matriz de impacto vs. viabilidad.
+      1. Situad las ideas en la matriz. Buscad aquellas que tengan alto impacto y cuya viabilidad técnica sea posible aunque sea retador. Con “posible” se entiende que se pueda realizar una demo con las tecnologías que se estudian en clase.
+   3. Actividad 4.3: Storyboard.
+      1. Dibujad la historieta completa de la interacción ganadora (mínimo 6 viñetas). Debe mostrar claramente: El disparador (trigger), la acción del usuario (gesto/voz), la respuesta del sistema y el cambio en el entorno.
+
+
+Entregables
+El entregable P1, que se entregará en la Semana 4, documentará vuestro proceso de diseño, y las distintas fases de divergencia y convergencia del mismo. 
+En preparación para el entregable, es importante documentar:
+1. Justificación del contexto elegido (Autobiográfico de cada miembro del grupo y Round Robin).
+2. Experience Map (puede ser foto de papel). Identificar claramente dónde están los problemas actuales.
+3. Listado de los HMW generados, con posibles iteraciones y refinamientos.
+4. Evidencia de los Crazy 8s de todos los miembros (fotos de los papeles).
+5. Informes de Bodystorming: Breve párrafo explicando qué gestos/interacciones se probaron físicamente y por qué se descartaron o aceptaron (ej: "Descartamos el gesto de saludar porque cansaba el brazo"). Entregar fotos demostrativas.
+6. Evidencias de las técnicas de convergencias utilizadas (decisión), incluyendo matriz de impacto vs. viabilidad. 
+7. Storyboard Final: El “cómic” detallado de la solución a implementar.
+Se sugiere estructurar la memoria en 4 apartados, uno para cada fase, incluyendo además:
+* Introducción, con breve explicación del contexto general de la exploración realizada en esta primera fase
+* Descripción detallada de uso de la IA generativa en el proceso de diseño
+* Reflexión final sobre el proceso y hallazgos más relevantes, incluyendo breve mención del trabajo realizado en clase 
+Importante: La memoria tendrá una extensión máxima de 15 páginas, además de Portada e Índice.
+Evaluación
+La P1 vale el 15% de la nota final, es decir, 1,5 puntos repartidos en:
+Fases / Evaluación
+	0.0
+(Deficiente/No entregado)
+	0.1 
+(Mejorable)
+	0.3 
+(Aceptable)
+	0.5 
+(Excelente)
+	Análisis y Definición del Problema (Fases 1 y 2)
+	No se entrega o el contexto es irrelevante. El mapa de experiencia no existe o es ilegible. Las preguntas HMW no tienen formato de pregunta o ignoran el problema.
+	Contexto genérico sin base autobiográfica. El mapa es confuso y no identifica claramente los puntos de dolor (Pain Points). Las HMW contienen la solución implícita
+	Contexto bien justificado. El mapa identifica correctamente el flujo y los problemas. Las HMW son correctas formalmente, aunque les falta enfoque en computación ubicua (siguen muy centradas en pantallas).
+	Análisis profundo y personal. El Experience Map visualiza la fricción física y emocional actual. Se han seleccionado HMW brillantes que definen una restricción física clara y abren la puerta a soluciones de voz/gestos sin nombrarlas.
+	Exploración y Validación Física (Fase 3)
+	No hay evidencia de bocetos ni de validación. Se pasa directamente a la solución final sin explorar alternativas.
+	Crazy 8s escasos o repetitivos. No hay evidencia de Bodystorming, o el análisis es superficial (no se explica qué se sintió al actuarlo). Falta el Solution Sketch de 3 paneles.
+	Se presentan los Crazy 8s de todo el equipo. Se documenta el Bodystorming y los Solution Sketches individuales son claros. Sin embargo, falta crítica sobre por qué se descartaron ciertos gestos en la validación física.
+	Gran divergencia en los Crazy 8s. El informe de Bodystorming es crítico: demuestra que el equipo ha "actuado" las ideas y ha descartado interacciones por fatiga o incomodidad social. Los Solution Sketches (3 paneles) explican por sí solos la mecánica de la idea propuesta.
+	Solución Final (Fase 4)
+	No se explica cómo se eligió la idea. No hay Matriz ni Storyboard.
+	No se documenta la técnica de voto. La solución ignora la Matriz (es trivial o imposible). El Storyboard es confuso, mezcla problema con solución o no muestra el flujo completo.
+	Se evidencia el uso de una técnica de voto (ej: Dot-Voting) y la Matriz sitúa la idea en zona viable. El Storyboard es claro, narra la historia y cumple los mínimos de interacción.
+	Documentación clara de la convergencia (Votos + Matriz). La idea elegida es de Alto Impacto y Retadora (pero viable/hackeable). El Storyboard es cinematográfico: muestra claramente el disparador, la acción del usuario y la respuesta del sistema en el entorno físico.
+	Se valorará: 
+* Uso de métodos de Design Sprint adicionales a los mencionados en esta guía.
+* La calidad de las fases de divergencia, medido en la diversidad, variedad, particularidad, detalle y riqueza de las propuestas y alternativas. 
+* La calidad de los medios utilizados para documentar el proceso.
+* La calidad de las fases de convergencia: síntesis adecuada, ilustrativa y clara; buen equilibrio entre síntesis y detalles importantes, resaltando aspectos claves del contexto de diseño.
+* Rigor y validez. Se valorará la elección de técnicas adecuadas de trabajo y el rigor con la que se llevan a cabo las distintas actividades (por eso, recuerda documentar tu proceso de diseño y el de tu grupo). 
+La memoria debe reflejar de manera clara, estructurada y comprensible el proceso realizado en esta primera fase del proyecto. Se aplicarán descuentos directos sobre la suma de los puntos anteriores.
+-0.1: Errores menores de formato, índice faltante o imágenes con baja resolución.
+-0.3: Redacción difícil de entender, falta de hilo conductor entre fases o ausencia de secciones obligatorias (ej: reflexión sobre IA).
+-0.5: Documentación caótica, incompleta o desorganizada que impide evaluar el trabajo realizado.
+Nota sobre evaluación del trabajo individual dentro del grupo
+Si se detecta que uno o más miembros del grupo no han contribuido significativamente al trabajo realizado, el profesor podrá asignar calificaciones diferenciadas. Se tendrán en cuenta:
+* La participación en clase y en las actividades del proyecto.
+* La contribución a la documentación y justificación de cada fase.
+* Evidencias de trabajo individual reflejadas en la memoria y en el desarrollo del proyecto.

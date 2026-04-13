@@ -1,0 +1,109 @@
+﻿Sistemas Interactivos y Ubicuos. Grado en Ingeniería Informática.  
+
+
+Introducción
+El proyecto de la asignatura sigue el recorrido de un proceso de diseño influido por el enfoque y técnicas de Design Thinking / Design Sprint para definir la estrategia y el diseño de vuestro sistema ubicuo.
+
+
+El proyecto culmina con el diseño de un sistema interactivo que utilice gestos, movimientos del cuerpo y comandos de voz como principales mecanismos de interacción, integrando múltiples dispositivos y pantallas.
+
+
+Este proyecto será desarrollado a lo largo de la asignatura, y se evaluará en tres fases, a través de tres entregables: 
+* P1 (Entender, Definir, Idear, Decidir), 
+* P2 (Prototipar), 
+* P3 (Validar).
+
+
+P2. PROTOTIPAR
+  
+
+Este entregable se centra en la 5 fase del proceso de diseño definido por el Design Sprint Kit de Google, la fase de prototipado. En esta etapa, las ideas generadas en la fase anterior toman forma mediante la construcción de un prototipo funcional que permita explorar, validar y refinar las interacciones basadas en gestos, movimientos del cuerpo y comandos de voz, utilizando distintos dispositivos.
+Objetivos y tareas
+El objetivo de esta fase es materializar el concepto de diseño en una implementación funcional mínima, integrando múltiples dispositivos y pantallas, con un enfoque iterativo basado en pruebas tempranas.
+El grupo deberá realizar y documentar las siguientes actividades:
+1. Implementar la arquitectura de red del sistema utilizando Node.js, Express y Socket.IO
+2. Implementar la(s) aplicación(es) web para la interfaz visual distribuida en múltiples dispositivos
+3. Implementar la captura y procesamiento de interacciones basadas en gestos, cuerpo y voz. Se requiere implementar las siguientes funcionalidades mínimas:
+   1. Navegar y seleccionar 
+   2. Control de funciones principales
+   3. Salida o confirmación
+   4. 3 funcionalidades adicionales
+4. Integrar comunicación en tiempo real entre los diferentes dispositivos del sistema
+5. Refinar las interacciones mediante prototipado experiencial, realizando pruebas iterativas con el equipo para ajustar el diseño antes de las pruebas finales
+6. Planificar sesiones de prototipado experiencial para explorar cómo los usuarios interactuarán físicamente con el sistema
+7. Grabar videos de uso del prototipo, mostrando cómo funciona en distintos escenarios 
+Entregables
+El entregable P2, que se entregará en la Semana 11, documentará el proceso de implementación del prototipo y presentará una versión funcional del sistema con sus principales interacciones.
+En preparación para el entregable, es importante documentar:
+* Notas y observaciones tomadas durante las sesiones de pruebas iterativas con el equipo, destacando qué ajustes se hicieron en los gestos o comandos tras "actuarlos" físicamente.
+* Listado de problemas técnicos encontrados durante el desarrollo y las decisiones tomadas para pivotar o mejorar la solución original de la P1.
+* Preparación de los clips de video que funcionen como demostración del sistema en un escenario real.  
+Se entregará
+1. Código Fuente del Sistema: Un archivo comprimido (.zip) que contenga todo el proyecto. Entregar únicamente el código fuente, sin la carpeta node_modules, pero si con el fichero package.json para poder instalar correctamente las dependencias. Se debe adjuntar un archivo README.md con instrucciones breves sobre cómo ejecutar el sistema.
+2. Memoria. Se sugiere estructurar la memoria en los siguientes apartados:
+* Introducción: Breve descripción del sistema y sus principales objetivos.
+* Especificaciones técnicas:
+   * Arquitectura del sistema (diagramas de componentes y comunicación)
+   * Tecnologías utilizadas
+* Implementación de los prototipos:
+   * Descripción y justificación de las interacciones implementadas
+   * Videos que muestran el prototipo en funcionamiento
+* Prototipado experiencial:
+   * Descripción de las sesiones realizadas
+   * Reflexión sobre cómo influyeron en la implementación del prototipo
+   * Videos de las sesiones de prototipado y análisis de los hallazgos obtenidos
+* Iteraciones y mejoras:
+   * Problemas encontrados y cómo se abordaron
+   * Cambios realizados respecto a las ideas originales
+   * (Si fuera el caso) Nuevas ideas generadas
+* Reflexión final: Aprendizajes obtenidos y próximos pasos hacia la evaluación en P3.
+	Importante: La memoria tendrá una extensión máxima de 15 páginas, además de Portada e Índice.
+Los videos no podrán superar un tamaño TOTAL de 100MB. 
+Se recomiendan videos 1080p (H.264) en formato mp4. 
+
+
+Alternativamente se pueden incluir enlaces a videos privados en YouTube u otras plataformas de video.
+	Evaluación
+La P2 vale el 30% de la nota final, es decir, 3 puntos repartidos en:
+Categoria / Evaluación
+	0.0
+(Deficiente/No entregado)
+	0.2 
+(Mejorable)
+	0.5 
+(Aceptable)
+	0.75 
+(Excelente)
+	Arquitectura y sincronización
+	No se implementa el servidor o no existe comunicación en tiempo real entre dispositivos.
+	Uso básico de Node.js/Socket.IO pero con errores de sincronización o diagramas técnicos incompletos.
+	Arquitectura de red funcional y bien documentada mediante diagramas de componentes y comunicación.
+	Sistema distribuido robusto con sincronización fluida y eficiente en tiempo real entre múltiples pantallas.
+	Grado de implementación de funcionalidades
+	Faltan las funciones mínimas o el sistema no responde a las acciones del usuario.
+	Se implementan las funciones básicas pero las 3 adicionales son incompletas o no aportan valor.
+	Cumple con navegar, control principal y salida, además de las 3 funciones adicionales operativas.
+	Integración impecable de todas las funciones con un flujo de interacción natural y adaptado al contexto.
+	Interacción
+	La captura de gestos o voz no funciona o se sustituye por teclado/ratón.
+	Interacciones poco naturales, con retraso excesivo o que no aprovechan bien las Web APIs.
+	Uso efectivo de APIs (MediaPipe, Web Speech, etc.) para controlar el sistema mediante el cuerpo o la voz.
+	Interacciones precisas y naturales, demostrando un uso avanzado de la computación invisible en el entorno.
+	Prototipado y videos
+	No hay evidencias de pruebas físicas ni vídeos del prototipo en funcionamiento.
+	Vídeos que no muestran la interacción o falta de reflexión sobre el ajuste de gestos tras las pruebas.
+	Documentación visual clara de las sesiones de bodystorming y vídeos que demuestran la viabilidad del prototipo.
+	Análisis crítico de las pruebas físicas que resultó en mejoras iterativas, apoyado por vídeos de alta calidad.
+	Se valorará: 
+* Implementación completa y funcional del prototipo
+* Proceso iterativo de prototipado y exploración de alternativas
+* Documentación clara y evidencia en video
+La memoria debe reflejar de manera clara, estructurada y comprensible el proceso realizado en esta primera fase del proyecto. Se aplicarán descuentos directos sobre la suma de los puntos anteriores.
+-0.1: Errores menores de formato, índice faltante o imágenes con baja resolución.
+-0.3: Redacción difícil de entender, falta de hilo conductor entre fases o ausencia de secciones obligatorias (ej: reflexión sobre IA).
+-0.5: Documentación caótica, incompleta o desorganizada que impide evaluar el trabajo realizado.
+Nota sobre evaluación del trabajo individual dentro del grupo
+Si se detecta que uno o más miembros del grupo no han contribuido significativamente al trabajo realizado, el profesor podrá asignar calificaciones diferenciadas. Se tendrán en cuenta:
+* La participación en clase y en las actividades del proyecto.
+* La contribución a la documentación y justificación de cada fase.
+* Evidencias de trabajo individual reflejadas en la memoria y en el desarrollo del proyecto.
