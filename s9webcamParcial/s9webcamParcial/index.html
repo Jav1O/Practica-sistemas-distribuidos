@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mediapipe Vision Tasks</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="script.js"></script>
+</head>
+<body>
+    
+    <canvas id="canvas" width="640" height="360"> </canvas>
+    <div id="liveView">
+        <video id="webcam" width="640" height="480" autoplay playsinline mute></video>
+
+    </div>
+    <button id="permissionButton">Solicitar Permisos</button>
+    <button id="camaras">Cargar Cámaras</button>
+    <select id="deviceSelect"></select>
+    <button id="iniciar">Iniciar</button>
+    <p id="flexiones"></p>
+</body>
+</html>

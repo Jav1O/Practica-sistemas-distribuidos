@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mando remoto</title>
+<script src="/socket.io/socket.io.js"></script>
+<script src="mando.js"></script>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background: #f2f2f2;
+  }
+
+  .mando {
+    width: 100%;
+    max-width: 400px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+  }
+
+  .botones {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  button {
+    padding: 25px 0;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+  }
+
+  /* Colores */
+  .rojo { background-color: #e53935; }
+  .verde { background-color: #43a047; }
+  .azul { background-color: #1e88e5; }
+  .amarillo { background-color: #fdd835; color: black; }
+  .naranja { background-color: #fb8c00; }
+  .morado { background-color: #8e24aa; }
+  .rosa { background-color: #ec407a; }
+  .cian { background-color: #00acc1; }
+
+  /* Pantalla simple */
+  #pantalla {
+    margin-bottom: 20px;
+    background: #eee;
+    padding: 10px;
+    text-align: center;
+    border-radius: 6px;
+    font-size: 18px;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="mando">
+  <div id="pantalla">Pulsa un botón para ver el color en la pantalla</div>
+
+  <div class="botones">
+    <button class="rojo">Rojo</button>
+    <button class="verde">Verde</button>
+
+    <button class="azul">Azul</button>
+    <button class="amarillo">Amarillo</button>
+
+    <button class="naranja">Naranja</button>
+    <button class="morado">Morado</button>
+
+    <button class="rosa">Rosa</button>
+    <button class="cian">Cian</button>
+  </div>
+</div>
+
+</body>
+</html>

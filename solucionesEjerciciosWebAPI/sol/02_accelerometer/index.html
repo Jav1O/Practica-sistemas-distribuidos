@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimiento con Accelerometer API</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f4f4f4;
+            overflow: hidden;
+            position: relative;
+        }
+        .game-container {
+            position: relative;
+            width: 90vw;
+            height: 90vh;
+            border: 2px solid #333;
+            background: #ddd;
+        }
+        .ball {
+            width: 40px;
+            height: 40px;
+            background: red;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .goal {
+            width: 50px;
+            height: 50px;
+            background: green;
+            border-radius: 10px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+    </style>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="game-container">
+        <div class="ball" id="ball"></div>
+        <div class="goal" id="goal"></div>
+    </div>
+</body>
+</html>

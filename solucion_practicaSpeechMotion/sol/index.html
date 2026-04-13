@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Video con Voz y Gestos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<script src="script.js" defer></script>
+
+<body>
+
+    <h1>Control de Video con Voz y Gestos</h1>
+    <video id="video" controls>
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        Tu navegador no soporta videos.
+    </video>
+
+    <p id="log">Di un comando o inclina el dispositivo.</p>
+
+    <div id="commands">
+        <p>Comandos de voz disponibles:</p>
+        <p>"Reproducir", "Pausar", "Subir volumen", "Bajar volumen", "Ayuda"</p>
+        <p>Controles con gestos:</p>
+        <p>Inclinación adelante: Avanza 5s</p>
+        <p>Inclinación atrás: Retrocede 5s</p>
+    </div>
+
+    <button onclick="startRecognition()">Iniciar Reconocimiento de Voz</button>
+
+
+</body>
+
+</html>
