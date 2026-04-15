@@ -1,0 +1,17 @@
+{
+  "name": "smartpark",
+  "version": "1.0.0",
+  "description": "Sistema ubicuo de parking inteligente - P2 Sistemas Interactivos y Ubicuos",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs"
+  },
+  "keywords": ["parking", "ubicuo", "socket.io", "mediapipe", "speech"],
+  "author": "Jose Palacios, Javier Olozaga, Alejandro Gómez",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}

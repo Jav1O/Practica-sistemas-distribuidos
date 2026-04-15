@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark — Panel del Parking</title>
+    <meta name="description" content="SmartPark: Panel de control del parking con visualización en tiempo real">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="panel.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">🅿️</span>
+                <span class="logo-text">SmartPark</span>
+                <span class="logo-subtitle">Panel de Control</span>
+            </div>
+        </div>
+        <div class="header-center">
+            <span class="connection-badge" id="connectionBadge">
+                <span class="conn-dot"></span>
+                <span id="connText">Conectando...</span>
+            </span>
+        </div>
+        <div class="header-right">
+            <div class="clock" id="clock">--:--:--</div>
+        </div>
+    </header>
+
+    <!-- Selector de parking -->
+    <nav class="parking-tabs" id="parkingTabs">
+        <!-- Se rellena dinámicamente -->
+    </nav>
+
+    <!-- Contenido principal -->
+    <main id="mainContent">
+        <!-- Stats bar -->
+        <section class="stats-bar" id="statsBar">
+            <div class="stat-card" id="statFree">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Libres</div>
+                <div class="stat-bar"><div class="stat-bar-fill free"></div></div>
+            </div>
+            <div class="stat-card" id="statReserved">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Reservadas</div>
+                <div class="stat-bar"><div class="stat-bar-fill reserved"></div></div>
+            </div>
+            <div class="stat-card" id="statOccupied">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Ocupadas</div>
+                <div class="stat-bar"><div class="stat-bar-fill occupied"></div></div>
+            </div>
+            <div class="stat-card" id="statTotal">
+                <div class="stat-number">-</div>
+                <div class="stat-label">Total</div>
+                <div class="stat-bar"><div class="stat-bar-fill total"></div></div>
+            </div>
+        </section>
+
+        <!-- Mapa de plazas -->
+        <section class="parking-map" id="parkingMap">
+            <div class="map-header">
+                <h2 id="mapTitle">Mapa de plazas</h2>
+                <div class="map-legend">
+                    <span class="legend-dot free"></span> Libre
+                    <span class="legend-dot reserved"></span> Reservada
+                    <span class="legend-dot confirmed"></span> Confirmada
+                    <span class="legend-dot occupied"></span> Ocupada
+                </div>
+            </div>
+            <div class="map-grid" id="mapGrid">
+                <div class="map-loading">
+                    <div class="spinner"></div>
+                    <p>Cargando mapa del parking...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Log de actividad -->
+        <section class="activity-log" id="activityLog">
+            <h3 class="log-title">📋 Registro de actividad</h3>
+            <div class="log-entries" id="logEntries">
+                <div class="log-entry">
+                    <span class="log-time">--:--:--</span>
+                    <span class="log-message">Esperando conexión...</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="panel.js"></script>
+</body>
+</html>
