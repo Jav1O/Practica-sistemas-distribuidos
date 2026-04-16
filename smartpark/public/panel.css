@@ -1,7 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   SmartPark — Panel del Parking Styles
-   Diseño dashboard para pantalla grande
-   ═══════════════════════════════════════════════════════════════════ */
+/* Estilos del panel del parking */
 
 :root {
     --bg-primary: #08090d;
@@ -52,7 +49,7 @@ body {
         var(--bg-primary);
 }
 
-/* ─── Header ─────────────────────────────────────────────────────── */
+/* Header */
 #header {
     display: flex;
     align-items: center;
@@ -136,7 +133,7 @@ body {
     letter-spacing: 1px;
 }
 
-/* ─── Parking Tabs ───────────────────────────────────────────────── */
+/* Tabs de parkings */
 .parking-tabs {
     display: flex;
     gap: 4px;
@@ -188,14 +185,14 @@ body {
     color: var(--bg-primary);
 }
 
-/* ─── Main Content ───────────────────────────────────────────────── */
+/* Contenido principal */
 #mainContent {
     padding: 20px 28px;
     max-width: 1400px;
     margin: 0 auto;
 }
 
-/* ─── Stats Bar ──────────────────────────────────────────────────── */
+/* Barra de estadisticas */
 .stats-bar {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -255,7 +252,7 @@ body {
 .stat-bar-fill.occupied { background: var(--accent-red); }
 .stat-bar-fill.total { background: var(--accent-blue); }
 
-/* ─── Parking Map ────────────────────────────────────────────────── */
+/* Mapa del parking */
 .parking-map {
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
@@ -297,7 +294,7 @@ body {
 .legend-dot.confirmed { background: var(--accent-blue); }
 .legend-dot.occupied { background: var(--accent-red); }
 
-/* ─── Map Grid ───────────────────────────────────────────────────── */
+/* Grid de plazas */
 .map-grid {
     display: flex;
     flex-direction: column;
@@ -402,7 +399,7 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ─── Activity Log ───────────────────────────────────────────────── */
+/* Log de actividad */
 .activity-log {
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
@@ -466,7 +463,7 @@ body {
 .log-entry.cancel .log-message { color: var(--accent-red); }
 .log-entry.expired .log-message { color: var(--text-muted); }
 
-/* ─── Aisle (pasillo central del parking) ────────────────────────── */
+/* Pasillo del parking */
 .map-aisle {
     height: 20px;
     display: flex;
@@ -503,7 +500,7 @@ body {
     z-index: 1;
 }
 
-/* ─── Responsive ─────────────────────────────────────────────────── */
+/* Responsive */
 @media (max-width: 900px) {
     .stats-bar {
         grid-template-columns: repeat(2, 1fr);

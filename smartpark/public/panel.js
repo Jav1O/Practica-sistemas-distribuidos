@@ -1,18 +1,16 @@
-// ═══════════════════════════════════════════════════════════════════
-// SmartPark — Panel del Parking: Mapa en tiempo real + Socket.IO
-// ═══════════════════════════════════════════════════════════════════
+// Panel del parking: mapa en tiempo real con Socket.IO
 
 const socket = io();
 
-// ─── Estado ─────────────────────────────────────────────────────────
+// Estado del panel
 const state = {
   parkings: [],
   currentParkingId: 0,
   spots: [],
-  previousSpotStates: {},  // Para detectar cambios y animar
+  previousSpotStates: {},  // para detectar cambios y animar
 };
 
-// ─── Elementos DOM ──────────────────────────────────────────────────
+// Elementos del DOM
 const $ = (sel) => document.querySelector(sel);
 const els = {
   connectionBadge: $('#connectionBadge'),
@@ -29,15 +27,13 @@ const els = {
   logEntries: $('#logEntries'),
 };
 
-// ═══════════════════════════════════════════════════════════════════
-// 1. CONEXIÓN SOCKET.IO
-// ═══════════════════════════════════════════════════════════════════
+// Conexion con el servidor
 
 socket.on('connect', () => {
   els.connectionBadge.classList.add('connected');
   els.connText.textContent = 'Conectado';
   addLog('Sistema conectado al servidor', 'info');
-  // Pedir lista de parkings
+  // pedir lista de parkings
   socket.emit('requestParkingList');
 });
 
@@ -47,37 +43,37 @@ socket.on('disconnect', () => {
   addLog('Conexión perdida', 'cancel');
 });
 
-// Recibir lista de parkings
+// Lista de parkings recibida
 socket.on('parkingList', (list) => {
   state.parkings = list;
   renderParkingTabs();
-  // Cargar detalle del primer parking
+  // cargar el primero por defecto
   if (list.length > 0) {
     selectParking(list[0].id);
   }
 });
 
-// Recibir detalle de un parking
+// Detalle de un parking
 socket.on('parkingDetail', (data) => {
   updateStats(data);
   renderMap(data.spots);
   state.spots = data.spots;
 });
 
-// Actualizaciones en tiempo real
+// Actualizacion en tiempo real
 socket.on('parkingUpdate', (data) => {
-  // Actualizar la lista local
+  // actualizar lista local
   const idx = state.parkings.findIndex(p => p.id === data.parkingId);
   if (idx >= 0 && data.parking) {
     state.parkings[idx] = data.parking;
     renderParkingTabs();
   }
 
-  // Si es el parking que estamos viendo, actualizar mapa
+  // si estamos viendo este parking, actualizar mapa
   if (data.parkingId === state.currentParkingId) {
     if (data.parking) updateStats(data.parking);
     if (data.spots) {
-      // Guardar estado anterior para animar cambios
+      // guardar estado previo para animar
       state.spots.forEach(s => {
         state.previousSpotStates[s.id] = s.status;
       });
@@ -86,7 +82,7 @@ socket.on('parkingUpdate', (data) => {
     }
   }
 
-  // Log
+  // registrar en el log
   if (data.message) {
     let logType = 'info';
     if (data.message.includes('reservada')) logType = 'reserve';
@@ -97,9 +93,7 @@ socket.on('parkingUpdate', (data) => {
   }
 });
 
-// ═══════════════════════════════════════════════════════════════════
-// 2. RENDERIZADO
-// ═══════════════════════════════════════════════════════════════════
+// Renderizado de la interfaz
 
 function renderParkingTabs() {
   els.parkingTabs.innerHTML = state.parkings.map(p => {
@@ -112,7 +106,7 @@ function renderParkingTabs() {
     `;
   }).join('');
 
-  // Eventos click
+  // click en las pestañas
   document.querySelectorAll('.parking-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       selectParking(parseInt(tab.dataset.id));
@@ -135,13 +129,13 @@ function selectParking(parkingId) {
 function updateStats(data) {
   const total = data.totalSpots || (data.freeSpots + data.reservedSpots + data.occupiedSpots);
 
-  // Números
+  // actualizar numeros
   els.statFree.querySelector('.stat-number').textContent = data.freeSpots;
   els.statReserved.querySelector('.stat-number').textContent = data.reservedSpots;
   els.statOccupied.querySelector('.stat-number').textContent = data.occupiedSpots;
   els.statTotal.querySelector('.stat-number').textContent = total;
 
-  // Barras de progreso
+  // barras de progreso
   const freeP = (data.freeSpots / total * 100).toFixed(0);
   const resP = (data.reservedSpots / total * 100).toFixed(0);
   const occP = (data.occupiedSpots / total * 100).toFixed(0);
@@ -153,7 +147,7 @@ function updateStats(data) {
 }
 
 function renderMap(spots) {
-  // Agrupar por fila (letra)
+  // agrupar por fila
   const rows = {};
   spots.forEach(spot => {
     const rowLetter = spot.label.replace(/[0-9]/g, '');
@@ -165,7 +159,7 @@ function renderMap(spots) {
 
   let html = '';
   rowKeys.forEach((rowKey, rowIndex) => {
-    // Pasillo cada 2 filas
+    // separador de pasillo cada 2 filas
     if (rowIndex > 0 && rowIndex % 2 === 0) {
       html += `
         <div class="map-aisle">
@@ -204,9 +198,7 @@ function getStatusText(status) {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// 3. LOG DE ACTIVIDAD
-// ═══════════════════════════════════════════════════════════════════
+// Log de actividad
 
 function addLog(message, type = 'info') {
   const now = new Date();
@@ -219,18 +211,16 @@ function addLog(message, type = 'info') {
     <span class="log-message">${message}</span>
   `;
 
-  // Insertar al principio
+  // poner arriba del todo
   els.logEntries.insertBefore(entry, els.logEntries.firstChild);
 
-  // Limitar a 50 entradas
+  // maximo 50 entradas
   while (els.logEntries.children.length > 50) {
     els.logEntries.removeChild(els.logEntries.lastChild);
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// 4. RELOJ
-// ═══════════════════════════════════════════════════════════════════
+// Reloj en el header
 
 function updateClock() {
   const now = new Date();

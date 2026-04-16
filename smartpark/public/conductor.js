@@ -1,16 +1,14 @@
-// ═══════════════════════════════════════════════════════════════════
-// SmartPark — Conductor: Voz + Gestos + Socket.IO
-// ═══════════════════════════════════════════════════════════════════
+// Conductor: voz, gestos y comunicacion con el servidor
 
 import {
   FilesetResolver,
   HandLandmarker,
 } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest";
 
-// ─── Socket.IO ──────────────────────────────────────────────────────
+// Conexion al servidor
 const socket = io();
 
-// ─── Estado de la app ───────────────────────────────────────────────
+// Estado general de la app
 const state = {
   parkings: [],
   currentParkingIndex: 0,
@@ -46,7 +44,7 @@ const state = {
   webcamListenerAttached: false,
 };
 
-// ─── Elementos del DOM ──────────────────────────────────────────────
+// Elementos del DOM
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
@@ -88,9 +86,7 @@ const els = {
   micIcon: $('#micIcon'),
 };
 
-// ═══════════════════════════════════════════════════════════════════
-// 1. CONEXIÓN SOCKET.IO
-// ═══════════════════════════════════════════════════════════════════
+// Eventos de conexion Socket.IO
 
 socket.on('connect', () => {
   els.connectionStatus.classList.add('connected');
@@ -202,9 +198,7 @@ socket.on('error', (data) => {
   unlockProcessing();
 });
 
-// ═══════════════════════════════════════════════════════════════════
-// 2. RECONOCIMIENTO DE VOZ (Web Speech API)
-// ═══════════════════════════════════════════════════════════════════
+// Reconocimiento de voz
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
@@ -280,62 +274,62 @@ function stopVoiceRecognition() {
 }
 
 function handleVoiceCommand(command) {
-  // ── Buscar aparcamiento
+  // buscar aparcamiento
   if (command.includes('buscar') && (command.includes('aparcamiento') || command.includes('parking') || command.includes('aparcar'))) {
     socket.emit('requestParkingList');
     showCommandFeedback('🔍 Buscando parkings...');
     return;
   }
 
-  // ── Siguiente parking
+  // siguiente parking
   if (command.includes('siguiente')) {
     navigateParking(1);
     return;
   }
 
-  // ── Anterior parking
+  // anterior
   if (command.includes('anterior')) {
     navigateParking(-1);
     return;
   }
 
-  // ── Reservar
+  // reservar
   if (command.includes('reservar') || command.includes('reserva')) {
     actionReserve();
     return;
   }
 
-  // ── Confirmar
+  // confirmar
   if (command.includes('confirmar') || command.includes('confirma') || command.includes('sí') || command.includes('afirmativo')) {
     actionConfirm();
     return;
   }
 
-  // ── Cancelar
+  // cancelar
   if (command.includes('cancelar') || command.includes('cancela') || command.includes('salir') || command.includes('no')) {
     actionCancel();
     return;
   }
 
-  // ── Modo urgente
+  // modo urgente
   if (command.includes('urgente') || command.includes('urgencia') || command.includes('prisa')) {
     actionUrgent();
     return;
   }
 
-  // ── Ver detalle
+  // ver detalle
   if (command.includes('ver') || command.includes('detalle') || command.includes('entrar')) {
     actionViewDetail();
     return;
   }
 
-  // ── Volver
+  // volver
   if (command.includes('volver') || command.includes('atrás')) {
     actionGoBack();
     return;
   }
 
-  // ── Ayuda
+  // ayuda
   if (command.includes('ayuda') || command.includes('comandos')) {
     speak('Puedes decir: buscar aparcamiento, siguiente, anterior, reservar, confirmar, cancelar, modo urgente, ver detalle, o volver.');
     return;
@@ -345,7 +339,7 @@ function handleVoiceCommand(command) {
   speak('No he entendido. Di ayuda para ver los comandos disponibles.');
 }
 
-// ─── Text-to-Speech ─────────────────────────────────────────────────
+// Sintesis de voz
 function speak(text) {
   const synth = window.speechSynthesis;
   // Cancelar cualquier síntesis previa
@@ -358,9 +352,7 @@ function speak(text) {
   console.log(`🔊 TTS: "${text}"`);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// 3. GESTOS CON MEDIAPIPE HandLandmarker — SISTEMA ROBUSTO
-// ═══════════════════════════════════════════════════════════════════
+// Deteccion de gestos con MediaPipe
 
 async function initHandLandmarker() {
   try {
@@ -467,7 +459,7 @@ function stopGestureDetection() {
   updateConfidenceBar(0);
 }
 
-// ─── Bucle principal de predicción ──────────────────────────────────
+// Bucle de prediccion de gestos
 async function predictGestures() {
   if (!state.gesturesActive || !state.handLandmarker) return;
 
@@ -511,7 +503,7 @@ async function predictGestures() {
         }
       }
 
-      // ── Comprobar si se puede disparar el gesto ──
+      // comprobar si se puede disparar
       if (
         !state.gestureCooldownActive &&
         !state.processingAction &&
@@ -550,14 +542,14 @@ async function predictGestures() {
   }
 }
 
-// ─── Comprobar uniformidad del buffer ───────────────────────────────
+// Comprueba que todo el buffer tenga el mismo gesto
 function isBufferUniform() {
   if (state.gestureBuffer.length === 0) return false;
   const first = state.gestureBuffer[0];
   return state.gestureBuffer.every(g => g === first);
 }
 
-// ─── Confianza del buffer (0..1) ────────────────────────────────────
+// Nivel de confianza segun el buffer (0 a 1)
 function getBufferConfidence() {
   if (state.gestureBuffer.length === 0) return 0;
   const first = state.gestureBuffer[state.gestureBuffer.length - 1];
@@ -565,7 +557,7 @@ function getBufferConfidence() {
   return matching / state.gestureBufferSize;
 }
 
-// ─── Liberar bloqueo de procesamiento ───────────────────────────────
+// Libera el bloqueo para aceptar nuevos gestos
 function unlockProcessing() {
   // Dar un pequeño delay para que la UI se actualice antes de aceptar nuevos gestos
   setTimeout(() => {
@@ -573,7 +565,7 @@ function unlockProcessing() {
   }, 500);
 }
 
-// ─── Dibujar landmarks de la mano ───────────────────────────────────
+// Dibuja los puntos y lineas de la mano en el canvas
 function drawHandLandmarks(ctx, landmarks) {
   const w = els.gestureCanvas.width;
   const h = els.gestureCanvas.height;
@@ -610,9 +602,7 @@ function drawHandLandmarks(ctx, landmarks) {
   });
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// 3b. CLASIFICACIÓN DE GESTOS — CON UMBRALES ROBUSTOS
-// ═══════════════════════════════════════════════════════════════════
+// Clasificacion de gestos con umbrales
 
 /**
  * Clasificación pura del gesto (sin side-effects).
@@ -628,10 +618,8 @@ function classifyGestureRaw(landmarks) {
     return 'ok';
   }
 
-  // ── Diferenciar PUÑO vs PULGAR ARRIBA ──
-  // Cuando los 4 dedos (no pulgar) están cerrados, usar la POSICIÓN VERTICAL
-  // del pulgar para distinguir: si el pulgar apunta claramente hacia arriba
-  // (tip por encima del MCP del índice) es thumbs_up, si no es puño.
+  // diferenciar puño, pulgar arriba y pulgar abajo
+  // segun la posicion vertical del pulgar
   if (!index && !middle && !ring && !pinky) {
     const thumbTipAbovePalm = landmarks[4].y < landmarks[5].y - 0.04;
     const thumbTipBelowWrist = landmarks[4].y > landmarks[0].y + 0.04;
@@ -709,7 +697,7 @@ function isOKGesture(landmarks) {
   return middleUp && ringUp && pinkyUp;
 }
 
-// ─── Etiquetar gesto para UI ────────────────────────────────────────
+// Texto que se muestra en pantalla para cada gesto
 function getGestureLabel(gesture) {
   switch (gesture) {
     case 'thumbs_up': return '👍 Reservar';
@@ -723,7 +711,7 @@ function getGestureLabel(gesture) {
   }
 }
 
-// ─── Ejecutar acción del gesto (tras confirmación) ──────────────────
+// Ejecuta la accion correspondiente al gesto detectado
 function handleGesture(gesture) {
   console.log(`✋ Gesto confirmado: ${gesture}`);
 
@@ -761,7 +749,7 @@ function handleGesture(gesture) {
   }
 }
 
-// ─── UI del gesto ───────────────────────────────────────────────────
+// Funciones para mostrar/ocultar el label del gesto
 function showGestureLabel(text, confidence) {
   if (state.gestureCooldownActive) {
     els.gestureLabel.textContent = '⏳ Espera...';
@@ -792,9 +780,7 @@ function updateConfidenceBar(value) {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// 4. ACCIONES DEL SISTEMA
-// ═══════════════════════════════════════════════════════════════════
+// Acciones principales
 
 function navigateParking(direction) {
   if (state.parkings.length === 0) {
@@ -887,9 +873,7 @@ function actionGoBack() {
   unlockProcessing();
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// 5. RENDERIZADO
-// ═══════════════════════════════════════════════════════════════════
+// Renderizado de vistas
 
 function showView(view) {
   els.viewParkingList.classList.remove('active');
@@ -1035,7 +1019,7 @@ function renderReservation(data) {
   els.btnConfirm.style.display = 'inline-block';
 }
 
-// ─── Timer de reserva ───────────────────────────────────────────────
+// Temporizador de la reserva (3 min)
 function startReservationTimer() {
   stopReservationTimer();
 
@@ -1074,7 +1058,7 @@ function stopReservationTimer() {
   }
 }
 
-// ─── Feedback visual de comandos ────────────────────────────────────
+// Muestra feedback flotante en pantalla
 let feedbackTimeout = null;
 function showCommandFeedback(text) {
   els.commandText.textContent = text;
@@ -1083,9 +1067,7 @@ function showCommandFeedback(text) {
   feedbackTimeout = setTimeout(() => els.commandFeedback.classList.remove('visible'), 2500);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// 6. EVENT LISTENERS
-// ═══════════════════════════════════════════════════════════════════
+// Listeners de los botones
 
 // Botones de la barra inferior
 els.btnVoice.addEventListener('click', startVoiceRecognition);
@@ -1108,8 +1090,6 @@ els.btnToggleCam.addEventListener('click', () => {
   }
 });
 
-// ═══════════════════════════════════════════════════════════════════
-// 7. INICIALIZACIÓN
-// ═══════════════════════════════════════════════════════════════════
+// Inicio
 
 console.log('🚗 SmartPark Conductor inicializado');

@@ -8,8 +8,7 @@ const io = new Server(server);
 
 const PORT = 3000;
 
-// ─── Estado del parking en memoria ──────────────────────────────────────────
-// 3 parkings con plazas distribuidas en filas
+// Datos de los parkings en memoria
 const parkingData = [
   {
     id: 0,
@@ -37,14 +36,14 @@ const parkingData = [
   },
 ];
 
-// Genera un array de plazas con estado aleatorio
+// Genera las plazas de un parking con estado aleatorio
 function generateSpots(count, parkingId) {
   const rows = ['A', 'B', 'C', 'D', 'E'];
   const spots = [];
   for (let i = 0; i < count; i++) {
     const row = rows[Math.floor(i / Math.ceil(count / rows.length))];
     const num = (i % Math.ceil(count / rows.length)) + 1;
-    // ~60% ocupadas al inicio para que sea realista
+    // aprox 60% ocupadas para simular uso real
     const isOccupied = Math.random() < 0.6;
     spots.push({
       id: `${parkingId}-${i}`,
@@ -57,7 +56,7 @@ function generateSpots(count, parkingId) {
   return spots;
 }
 
-// Función auxiliar: resumen de un parking (sin detalle de plazas)
+// Devuelve resumen de un parking sin las plazas individuales
 function getParkingSummary(parking) {
   const free = parking.spots.filter(s => s.status === 'free').length;
   const reserved = parking.spots.filter(s => s.status === 'reserved' || s.status === 'confirmed').length;
@@ -75,7 +74,7 @@ function getParkingSummary(parking) {
   };
 }
 
-// Temporizador de reservas: liberar después de 3 minutos si no se confirma
+// Cada 10s, liberar reservas que lleven mas de 3 min sin confirmar
 setInterval(() => {
   const now = Date.now();
   parkingData.forEach(parking => {
@@ -94,23 +93,23 @@ setInterval(() => {
       }
     });
   });
-}, 10000); // Comprobar cada 10 segundos
+}, 10000);
 
-// ─── Servir archivos estáticos ──────────────────────────────────────────────
+// Archivos estaticos
 app.use(express.static('public'));
 
-// ─── Socket.IO ──────────────────────────────────────────────────────────────
+// Conexiones Socket.IO
 io.on('connection', (socket) => {
   console.log(`✅ Usuario conectado: ${socket.id}`);
 
-  // Enviar lista de parkings
+  // Lista de parkings
   socket.on('requestParkingList', () => {
     const list = parkingData.map(p => getParkingSummary(p));
     socket.emit('parkingList', list);
     console.log(`📋 Lista de parkings enviada a ${socket.id}`);
   });
 
-  // Enviar detalle de un parking
+  // Detalle de un parking concreto
   socket.on('requestParkingDetail', (parkingId) => {
     const parking = parkingData.find(p => p.id === parkingId);
     if (parking) {
@@ -122,7 +121,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Reservar una plaza
+  // Reservar plaza
   socket.on('reserveSpot', ({ parkingId, spotId }) => {
     const parking = parkingData.find(p => p.id === parkingId);
     if (!parking) {
@@ -130,7 +129,7 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Si no se especifica plaza, buscar la primera libre
+    // Si no viene spotId, coger la primera libre
     let spot;
     if (spotId) {
       spot = parking.spots.find(s => s.id === spotId);
@@ -149,7 +148,7 @@ io.on('connection', (socket) => {
 
     console.log(`🎫 Plaza ${spot.label} reservada en ${parking.name} por ${socket.id}`);
 
-    // Notificar al que reservó
+    // Responder al conductor
     socket.emit('reservationConfirmed', {
       parkingId: parking.id,
       parkingName: parking.name,
@@ -157,7 +156,7 @@ io.on('connection', (socket) => {
       message: `Plaza ${spot.label} reservada por 3 minutos`,
     });
 
-    // Notificar a todos (panel y otros conductores)
+    // Avisar a todos los clientes
     io.emit('parkingUpdate', {
       parkingId: parking.id,
       parking: getParkingSummary(parking),
@@ -166,7 +165,7 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Confirmar reserva
+  // Confirmar una reserva
   socket.on('confirmReservation', ({ parkingId }) => {
     const parking = parkingData.find(p => p.id === parkingId);
     if (!parking) return;
@@ -195,7 +194,7 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Cancelar reserva
+  // Cancelar reserva activa
   socket.on('cancelReservation', ({ parkingId }) => {
     const parking = parkingData.find(p => p.id === parkingId);
     if (!parking) return;
@@ -226,7 +225,7 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Modo urgente: devolver parking con más plazas libres
+  // Modo urgente: buscar el parking con mas plazas
   socket.on('urgentMode', () => {
     const summaries = parkingData.map(p => getParkingSummary(p));
     const best = summaries.reduce((a, b) => (a.freeSpots > b.freeSpots ? a : b));
@@ -238,7 +237,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    // Liberar reservas del usuario desconectado
+    // Si se desconecta, liberar sus reservas
     parkingData.forEach(parking => {
       parking.spots.forEach(spot => {
         if (spot.reservedBy === socket.id && spot.status === 'reserved') {

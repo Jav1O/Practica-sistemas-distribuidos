@@ -1,7 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   SmartPark — Conductor Interface Styles
-   Diseño HUD oscuro inspirado en paneles de vehículo
-   ═══════════════════════════════════════════════════════════════════ */
+/* Estilos del conductor */
 
 :root {
     --bg-primary: #0a0e17;
@@ -64,7 +61,7 @@ body {
         var(--bg-primary);
 }
 
-/* ─── Header ─────────────────────────────────────────────────────── */
+/* Header */
 #header {
     position: sticky;
     top: 0;
@@ -170,7 +167,7 @@ body {
     50% { box-shadow: 0 0 20px rgba(255, 23, 68, 0.6); }
 }
 
-/* ─── Interaction Bar ────────────────────────────────────────────── */
+/* Barra de interaccion */
 .interaction-bar {
     display: flex;
     gap: 12px;
@@ -218,7 +215,7 @@ body {
     50% { transform: scale(1.2); }
 }
 
-/* ─── Command Feedback ───────────────────────────────────────────── */
+/* Feedback de comandos */
 .command-feedback {
     position: fixed;
     top: 50%;
@@ -247,7 +244,7 @@ body {
     color: var(--accent-green);
 }
 
-/* ─── Main Content ───────────────────────────────────────────────── */
+/* Contenido principal */
 #mainContent {
     padding: 20px;
     padding-bottom: 100px;
@@ -287,7 +284,7 @@ body {
     font-weight: 500;
 }
 
-/* ─── Parking Cards ──────────────────────────────────────────────── */
+/* Tarjetas de parkings */
 .parking-cards {
     display: flex;
     flex-direction: column;
@@ -410,7 +407,7 @@ body {
     border-radius: 10px;
 }
 
-/* ─── Loading Placeholder ────────────────────────────────────────── */
+/* Placeholder de carga */
 .loading-placeholder {
     display: flex;
     flex-direction: column;
@@ -434,7 +431,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ─── Nav Hint ───────────────────────────────────────────────────── */
+/* Indicaciones de navegacion */
 .nav-hint {
     display: flex;
     justify-content: center;
@@ -452,7 +449,7 @@ body {
     font-style: normal;
 }
 
-/* ─── Parking Detail ─────────────────────────────────────────────── */
+/* Detalle del parking */
 .btn-back {
     background: none;
     border: 1px solid var(--border-light);
@@ -542,7 +539,7 @@ body {
     font-weight: 600;
 }
 
-/* ─── Spots Grid ─────────────────────────────────────────────────── */
+/* Grid de plazas */
 .spots-grid {
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
@@ -628,7 +625,7 @@ body {
     50% { box-shadow: 0 0 8px rgba(255, 171, 0, 0.3); }
 }
 
-/* ─── Reservation Card ───────────────────────────────────────────── */
+/* Tarjeta de reserva */
 .reservation-card {
     background: var(--bg-card);
     border: 1px solid var(--accent-green);
@@ -728,7 +725,7 @@ body {
     font-style: normal;
 }
 
-/* ─── Webcam Container ───────────────────────────────────────────── */
+/* Webcam */
 .webcam-container {
     position: fixed;
     bottom: 80px;
@@ -820,7 +817,7 @@ body {
     border-color: rgba(255, 171, 0, 0.3);
 }
 
-/* ─── Confidence Bar ─────────────────────────────────────────────── */
+/* Barra de confianza */
 .confidence-bar {
     position: absolute;
     bottom: 0;
@@ -850,7 +847,7 @@ body {
     opacity: 0.5;
 }
 
-/* ─── Controls Bar ───────────────────────────────────────────────── */
+/* Barra de controles */
 #controlsBar {
     position: fixed;
     bottom: 0;
@@ -909,7 +906,7 @@ body {
     color: var(--accent-green);
 }
 
-/* ─── Responsive ─────────────────────────────────────────────────── */
+/* Responsive */
 @media (max-width: 600px) {
     .interaction-bar {
         flex-direction: column;
