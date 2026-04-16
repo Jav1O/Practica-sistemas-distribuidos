@@ -1,75 +1,58 @@
-# SmartPark — Sistema Ubicuo de Parking Inteligente
+SmartPark — prototipo de parking ubicuo
 
-Sistema de parking inteligente que permite a los conductores buscar, reservar y confirmar plazas de aparcamiento mediante **gestos con la mano**, **comandos de voz** y una interfaz visual distribuida en múltiples dispositivos.
+SmartPark es un prototipo de sistema de parking inteligente que permite buscar, reservar y confirmar plazas mediante comandos de voz y gestos con la mano, con una interfaz distribuida en dos pantallas sincronizadas en tiempo real.
 
-## Arquitectura
-
-- **Servidor**: Node.js + Express + Socket.IO (comunicación en tiempo real)
-- **Conductor** (`conductor.html`): Interfaz móvil del conductor con interacciones por voz y gestos
-- **Panel** (`panel.html`): Panel de control del parking para monitorización en pantalla grande
-
-## Requisitos
-
-- Node.js v18 o superior
-- Navegador con soporte para WebRTC (cámara) y Web Speech API (Chrome recomendado)
-
-## Instalación y Ejecución
-
-```bash
-# Instalar dependencias
+Componentes
+Servidor (Node.js + Express + Socket.IO): gestiona el estado de los parkings y sincroniza a los clientes.
+Conductor (/conductor.html): interfaz tipo HUD con voz/gestos y feedback por voz.
+Panel (/panel.html): dashboard para pantalla grande con mapa de plazas, estadísticas y log de eventos.
+Requisitos
+Node.js 18+
+Google Chrome recomendado (Web Speech API + cámara/WebRTC)
+Instalación y ejecución
 npm install
-
-# Iniciar el servidor
 npm start
-
-# O con recarga automática en desarrollo
+# opcional en desarrollo
 npm run dev
-```
 
-Una vez iniciado, acceder a:
-- **Conductor**: http://localhost:3000/conductor.html
-- **Panel del parking**: http://localhost:3000/panel.html
+Abrir:
 
-## Interacciones Implementadas
+Conductor: http://localhost:3000/conductor.html
+Panel: http://localhost:3000/panel.html
 
-### Comandos de Voz
-| Comando | Acción |
-|---------|--------|
-| *"buscar aparcamiento"* | Busca parkings cercanos |
-| *"siguiente"* / *"anterior"* | Navega entre parkings |
-| *"reservar"* | Reserva plaza en el parking seleccionado |
-| *"confirmar"* / *"sí"* | Confirma la reserva activa |
-| *"cancelar"* / *"salir"* | Cancela la reserva o vuelve atrás |
-| *"urgente"* / *"prisa"* | Activa modo urgente (parking con más plazas) |
-| *"ver detalle"* / *"entrar"* | Muestra detalle del parking seleccionado |
-| *"volver"* / *"atrás"* | Vuelve a la vista anterior |
-| *"ayuda"* | Lista los comandos disponibles |
+Recomendación: abrir Panel en un PC/monitor grande y Conductor en otro dispositivo (móvil o portátil).
+Acepta permisos de micrófono y cámara cuando el navegador lo pida.
 
-### Gestos con la Mano (MediaPipe)
-| Gesto | Acción |
-|-------|--------|
-| 👍 Pulgar arriba | Reservar plaza |
-| ✌️ Victoria (dos dedos) | Siguiente parking |
-| ☝️ Índice extendido | Ver detalle |
-| 👌 OK (pulgar e índice juntos) | Confirmar reserva |
-| ✋ Mano abierta | Cancelar |
-| ✊ Puño cerrado | Volver atrás |
+Interacciones principales
+Voz (SpeechRecognition)
+“buscar aparcamiento”
+“siguiente” / “anterior”
+“ver detalle”
+“reservar”
+“confirmar” / “sí”
+“cancelar” / “salir”
+“urgente” / “prisa”
+“volver” / “atrás”
+“ayuda”
+Gestos (MediaPipe HandLandmarker)
+👍 reservar
+✌️ siguiente
+☝️ ver detalle
+👌 confirmar
+✋ cancelar
+✊ volver
+Estabilidad de gestos (anti falsos positivos)
 
-### Sistema de Estabilidad de Gestos
-Para evitar falsos positivos, el sistema implementa:
-- **Buffer de estabilidad**: Se requieren 7 frames consecutivos con el mismo gesto antes de activarlo
-- **Barra de confianza visual**: Muestra el progreso de detección del gesto en tiempo real
-- **Cooldown con liberación**: Tras ejecutar un gesto, se requiere quitar la mano o cambiar de gesto antes de poder ejecutar otro
-- **Umbrales de detección**: Margen de seguridad en la clasificación de dedos extendidos para evitar detecciones incorrectas durante el movimiento
+Para evitar ejecuciones accidentales, el sistema usa:
 
-## Tecnologías
+confirmación por estabilidad (varios frames consecutivos con el mismo gesto),
+barra visual de progreso,
+cooldown tras ejecutar un gesto,
+márgenes/umbrales para reducir errores en transiciones.
+Tecnologías
 
-- **Node.js** + **Express** — Servidor HTTP
-- **Socket.IO** — Comunicación en tiempo real bidireccional
-- **MediaPipe HandLandmarker** — Detección de gestos con la mano
-- **Web Speech API** — Reconocimiento de voz (SpeechRecognition) y síntesis (SpeechSynthesis)
-- **CSS Custom Properties** — Sistema de diseño con tema HUD oscuro
+Node.js, Express, Socket.IO, MediaPipe HandLandmarker, Web Speech API (SpeechRecognition/SpeechSynthesis), HTML/CSS/JS.
 
-## Autores
+Autores
 
 Jose Palacios, Javier Olozaga, Alejandro Gómez
