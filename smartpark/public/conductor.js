@@ -24,11 +24,26 @@ const state = {
   gesturesActive: false,
   urgentMode: false,
 
-  // Gestos
-  lastGestureTime: 0,
-  gestureDelay: 1500,         // ms entre gestos para evitar repetición
+  // Gestos — sistema de estabilidad robusto
   handLandmarker: null,
   webcamRunning: false,
+  lastGestureTime: 0,
+  gestureDelay: 1200,           // ms mínimo entre gestos
+
+  // Buffer de estabilidad: exige N frames consecutivos con el MISMO gesto
+  gestureBuffer: [],
+  gestureBufferSize: 4,         // frames consecutivos necesarios para confirmar
+
+  // Cooldown con liberación: tras disparar, exige M frames de "sin gesto" para rearmar
+  gestureCooldownActive: false,
+  nullFrameCount: 0,
+  requiredNullFrames: 6,        // frames sin gesto para poder detectar otro
+
+  // Bloqueo anti‑doble disparo
+  processingAction: false,
+
+  // Webcam listener registrado
+  webcamListenerAttached: false,
 };
 
 // ─── Elementos del DOM ──────────────────────────────────────────────
@@ -69,6 +84,7 @@ const els = {
   webcam: $('#webcam'),
   gestureCanvas: $('#gestureCanvas'),
   gestureLabel: $('#gestureLabel'),
+  gestureConfidence: $('#gestureConfidence'),
   micIcon: $('#micIcon'),
 };
 
@@ -80,6 +96,10 @@ socket.on('connect', () => {
   els.connectionStatus.classList.add('connected');
   els.connectionStatus.querySelector('span:last-child').textContent = 'Conectado';
   console.log('✅ Conectado al servidor');
+  // Pedir lista al conectar
+  setTimeout(() => {
+    socket.emit('requestParkingList');
+  }, 500);
 });
 
 socket.on('disconnect', () => {
@@ -101,6 +121,7 @@ socket.on('parkingDetail', (data) => {
   state.currentSpots = data.spots;
   renderParkingDetail(data);
   showView('detail');
+  unlockProcessing();
 });
 
 // Reserva confirmada por servidor
@@ -114,6 +135,7 @@ socket.on('reservationConfirmed', (data) => {
   showView('reservation');
   startReservationTimer();
   speak(data.message);
+  unlockProcessing();
 });
 
 // Confirmación exitosa
@@ -126,6 +148,7 @@ socket.on('confirmationSuccess', (data) => {
   els.reservationTimer.className = 'reservation-timer';
   els.btnConfirm.style.display = 'none';
   speak(data.message);
+  unlockProcessing();
 });
 
 // Cancelación exitosa
@@ -135,6 +158,7 @@ socket.on('cancellationSuccess', (data) => {
   showView('list');
   speak(data.message);
   socket.emit('requestParkingList');
+  unlockProcessing();
 });
 
 // Actualización de parking en tiempo real
@@ -168,12 +192,14 @@ socket.on('urgentResult', (data) => {
     renderParkingList();
     showCommandFeedback(`🚨 ${data.parking.name} — ${data.parking.freeSpots} libres`);
   }
+  unlockProcessing();
 });
 
 // Errores
 socket.on('error', (data) => {
   speak(data.message);
   showCommandFeedback(`⚠️ ${data.message}`);
+  unlockProcessing();
 });
 
 // ═══════════════════════════════════════════════════════════════════
@@ -333,7 +359,7 @@ function speak(text) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 3. GESTOS CON MEDIAPIPE HandLandmarker
+// 3. GESTOS CON MEDIAPIPE HandLandmarker — SISTEMA ROBUSTO
 // ═══════════════════════════════════════════════════════════════════
 
 async function initHandLandmarker() {
@@ -383,17 +409,35 @@ async function startGestureDetection() {
     state.gesturesActive = true;
     state.webcamRunning = true;
 
+    // Resetear sistema de estabilidad
+    state.gestureBuffer = [];
+    state.gestureCooldownActive = false;
+    state.nullFrameCount = 0;
+    state.processingAction = false;
+
     els.webcamContainer.classList.add('active');
     els.gestureIndicator.classList.add('active');
     els.gestureStatus.textContent = 'Gestos: activos';
     els.btnGestures.classList.add('active');
 
-    // Esperar a que el video cargue
-    els.webcam.addEventListener('loadeddata', () => {
-      els.gestureCanvas.width = els.webcam.videoWidth;
-      els.gestureCanvas.height = els.webcam.videoHeight;
-      predictGestures();
-    });
+    // Registrar listener solo una vez
+    if (!state.webcamListenerAttached) {
+      state.webcamListenerAttached = true;
+      els.webcam.addEventListener('loadeddata', () => {
+        els.gestureCanvas.width = els.webcam.videoWidth;
+        els.gestureCanvas.height = els.webcam.videoHeight;
+        if (state.gesturesActive) {
+          predictGestures();
+        }
+      });
+    } else {
+      // Si ya se registró, esperar a que cargue y arrancar
+      if (els.webcam.readyState >= 2) {
+        els.gestureCanvas.width = els.webcam.videoWidth;
+        els.gestureCanvas.height = els.webcam.videoHeight;
+        predictGestures();
+      }
+    }
 
   } catch (error) {
     console.error('Error accediendo a la cámara:', error);
@@ -405,6 +449,11 @@ function stopGestureDetection() {
   state.gesturesActive = false;
   state.webcamRunning = false;
 
+  // Resetear sistema de estabilidad
+  state.gestureBuffer = [];
+  state.gestureCooldownActive = false;
+  state.nullFrameCount = 0;
+
   if (els.webcam.srcObject) {
     els.webcam.srcObject.getTracks().forEach(t => t.stop());
     els.webcam.srcObject = null;
@@ -414,8 +463,11 @@ function stopGestureDetection() {
   els.gestureIndicator.classList.remove('active');
   els.gestureStatus.textContent = 'Gestos: desactivados';
   els.btnGestures.classList.remove('active');
+  hideGestureLabel();
+  updateConfidenceBar(0);
 }
 
+// ─── Bucle principal de predicción ──────────────────────────────────
 async function predictGestures() {
   if (!state.gesturesActive || !state.handLandmarker) return;
 
@@ -430,11 +482,63 @@ async function predictGestures() {
       const landmarks = results.landmarks[0];
       drawHandLandmarks(ctx, landmarks);
 
-      // Clasificar gesto
-      const gesture = classifyGesture(landmarks);
-      if (gesture && (now - state.lastGestureTime > state.gestureDelay)) {
+      // Clasificar gesto (sin efectos, solo clasificación)
+      const gesture = classifyGestureRaw(landmarks);
+
+      if (gesture) {
+        // Añadir al buffer de estabilidad
+        state.gestureBuffer.push(gesture);
+        if (state.gestureBuffer.length > state.gestureBufferSize) {
+          state.gestureBuffer.shift();
+        }
+        state.nullFrameCount = 0;
+
+        // Mostrar label según confianza
+        const confidence = getBufferConfidence();
+        showGestureLabel(getGestureLabel(gesture), confidence);
+        updateConfidenceBar(confidence);
+
+      } else {
+        // Gesto nulo: incrementar contador y limpiar buffer
+        state.nullFrameCount++;
+        state.gestureBuffer = [];
+        hideGestureLabel();
+        updateConfidenceBar(0);
+
+        // Liberar cooldown después de suficientes frames sin gesto
+        if (state.gestureCooldownActive && state.nullFrameCount >= state.requiredNullFrames) {
+          state.gestureCooldownActive = false;
+        }
+      }
+
+      // ── Comprobar si se puede disparar el gesto ──
+      if (
+        !state.gestureCooldownActive &&
+        !state.processingAction &&
+        state.gestureBuffer.length >= state.gestureBufferSize &&
+        isBufferUniform() &&
+        (now - state.lastGestureTime > state.gestureDelay)
+      ) {
+        const confirmedGesture = state.gestureBuffer[0];
+
+        // Disparar acción
         state.lastGestureTime = now;
-        handleGesture(gesture);
+        state.gestureCooldownActive = true;
+        state.gestureBuffer = [];
+        state.processingAction = true;
+
+        handleGesture(confirmedGesture);
+      }
+
+    } else {
+      // No se detectó mano → resetear
+      state.gestureBuffer = [];
+      state.nullFrameCount++;
+      hideGestureLabel();
+      updateConfidenceBar(0);
+
+      if (state.gestureCooldownActive && state.nullFrameCount >= state.requiredNullFrames) {
+        state.gestureCooldownActive = false;
       }
     }
   } catch (e) {
@@ -446,6 +550,30 @@ async function predictGestures() {
   }
 }
 
+// ─── Comprobar uniformidad del buffer ───────────────────────────────
+function isBufferUniform() {
+  if (state.gestureBuffer.length === 0) return false;
+  const first = state.gestureBuffer[0];
+  return state.gestureBuffer.every(g => g === first);
+}
+
+// ─── Confianza del buffer (0..1) ────────────────────────────────────
+function getBufferConfidence() {
+  if (state.gestureBuffer.length === 0) return 0;
+  const first = state.gestureBuffer[state.gestureBuffer.length - 1];
+  const matching = state.gestureBuffer.filter(g => g === first).length;
+  return matching / state.gestureBufferSize;
+}
+
+// ─── Liberar bloqueo de procesamiento ───────────────────────────────
+function unlockProcessing() {
+  // Dar un pequeño delay para que la UI se actualice antes de aceptar nuevos gestos
+  setTimeout(() => {
+    state.processingAction = false;
+  }, 500);
+}
+
+// ─── Dibujar landmarks de la mano ───────────────────────────────────
 function drawHandLandmarks(ctx, landmarks) {
   const w = els.gestureCanvas.width;
   const h = els.gestureCanvas.height;
@@ -460,8 +588,11 @@ function drawHandLandmarks(ctx, landmarks) {
     [5,9],[9,13],[13,17],           // Palma
   ];
 
+  // Color según estado
+  const color = state.gestureCooldownActive ? '#ff9800' : '#00e676';
+
   // Líneas
-  ctx.strokeStyle = '#00e676';
+  ctx.strokeStyle = color;
   ctx.lineWidth = 2;
   connections.forEach(([s, e]) => {
     ctx.beginPath();
@@ -474,75 +605,90 @@ function drawHandLandmarks(ctx, landmarks) {
   landmarks.forEach((lm) => {
     ctx.beginPath();
     ctx.arc(lm.x * w, lm.y * h, 3, 0, 2 * Math.PI);
-    ctx.fillStyle = '#00e676';
+    ctx.fillStyle = color;
     ctx.fill();
   });
 }
 
-// ─── Clasificación de gestos ────────────────────────────────────────
-function classifyGesture(landmarks) {
-  // Calcular si cada dedo está extendido
+// ═══════════════════════════════════════════════════════════════════
+// 3b. CLASIFICACIÓN DE GESTOS — CON UMBRALES ROBUSTOS
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Clasificación pura del gesto (sin side-effects).
+ * Usa umbrales más estrictos para evitar falsos positivos.
+ */
+function classifyGestureRaw(landmarks) {
   const fingers = getFingerStates(landmarks);
   const [thumb, index, middle, ring, pinky] = fingers;
 
-  // 👍 Pulgar arriba: solo pulgar extendido
-  if (thumb && !index && !middle && !ring && !pinky) {
-    showGestureLabel('👍 Reservar');
-    return 'thumbs_up';
+  // 👌 OK: pulgar e índice juntos, otros extendidos
+  // Comprobar PRIMERO para evitar confusión con otros gestos
+  if (isOKGesture(landmarks)) {
+    return 'ok';
   }
 
-  // ✋ Mano abierta: todos los dedos extendidos
-  if (thumb && index && middle && ring && pinky) {
-    showGestureLabel('✋ Cancelar');
-    return 'open_hand';
-  }
-
-  // ✌️ Victoria / Dos dedos: índice y medio extendidos
-  if (!thumb && index && middle && !ring && !pinky) {
-    showGestureLabel('✌️ Siguiente');
-    return 'victory';
+  // ── Diferenciar PUÑO vs PULGAR ARRIBA ──
+  // Cuando los 4 dedos (no pulgar) están cerrados, usar la POSICIÓN VERTICAL
+  // del pulgar para distinguir: si el pulgar apunta claramente hacia arriba
+  // (tip por encima del MCP del índice) es thumbs_up, si no es puño.
+  if (!index && !middle && !ring && !pinky) {
+    const thumbTipAbovePalm = landmarks[4].y < landmarks[5].y - 0.04;
+    const thumbTipBelowWrist = landmarks[4].y > landmarks[0].y + 0.04;
+    if (thumbTipAbovePalm) {
+      return 'thumbs_up';
+    } else if (thumbTipBelowWrist) {
+      return 'thumbs_down';
+    } else {
+      return 'fist';
+    }
   }
 
   // ☝️ Un dedo: solo índice extendido
   if (!thumb && index && !middle && !ring && !pinky) {
-    showGestureLabel('☝️ Seleccionar');
     return 'pointing';
   }
 
-  // 👌 OK: pulgar e índice juntos, otros extendidos
-  if (isOKGesture(landmarks)) {
-    showGestureLabel('👌 Confirmar');
-    return 'ok';
+  // ✌️ Victoria / Dos dedos: índice y medio extendidos
+  if (!thumb && index && middle && !ring && !pinky) {
+    return 'victory';
   }
 
-  // ✊ Puño: ningún dedo extendido
-  if (!thumb && !index && !middle && !ring && !pinky) {
-    showGestureLabel('✊ Volver');
-    return 'fist';
+  // ✋ Mano abierta: todos los dedos extendidos
+  if (thumb && index && middle && ring && pinky) {
+    return 'open_hand';
   }
 
-  hideGestureLabel();
   return null;
 }
 
+/**
+ * Detección de dedos extendidos con UMBRAL de margen.
+ * El margen evita detecciones falsas cuando los dedos están cerca del límite.
+ */
 function getFingerStates(landmarks) {
-  // Cada dedo: comparar la punta con la articulación
-  // Pulgar: comparar en eje X (considerando orientación)
+  const THRESHOLD = 0.012; // Margen de seguridad normalizado
+
+  // Determinar orientación de la mano
   const isRightHand = landmarks[17].x < landmarks[5].x;
 
+  // Pulgar: comparar en eje X (con margen)
   const thumbExtended = isRightHand
-    ? landmarks[4].x < landmarks[3].x
-    : landmarks[4].x > landmarks[3].x;
+    ? landmarks[4].x < landmarks[3].x - THRESHOLD
+    : landmarks[4].x > landmarks[3].x + THRESHOLD;
 
-  // Otros dedos: comparar en eje Y (hacia arriba = menor Y)
-  const indexExtended = landmarks[8].y < landmarks[6].y;
-  const middleExtended = landmarks[12].y < landmarks[10].y;
-  const ringExtended = landmarks[16].y < landmarks[14].y;
-  const pinkyExtended = landmarks[20].y < landmarks[18].y;
+  // Otros dedos: comparar en eje Y (hacia arriba = menor Y, con margen)
+  const indexExtended  = landmarks[8].y  < landmarks[6].y  - THRESHOLD;
+  const middleExtended = landmarks[12].y < landmarks[10].y - THRESHOLD;
+  const ringExtended   = landmarks[16].y < landmarks[14].y - THRESHOLD;
+  const pinkyExtended  = landmarks[20].y < landmarks[18].y - THRESHOLD;
 
   return [thumbExtended, indexExtended, middleExtended, ringExtended, pinkyExtended];
 }
 
+/**
+ * Detección del gesto OK con umbral estricto.
+ */
 function isOKGesture(landmarks) {
   // Distancia entre punta del pulgar (4) y punta del índice (8)
   const dist = Math.hypot(
@@ -550,21 +696,45 @@ function isOKGesture(landmarks) {
     landmarks[4].y - landmarks[8].y,
     landmarks[4].z - landmarks[8].z
   );
-  // Los dedos medio, anular y meñique deben estar extendidos
-  const middleUp = landmarks[12].y < landmarks[10].y;
-  const ringUp = landmarks[16].y < landmarks[14].y;
-  const pinkyUp = landmarks[20].y < landmarks[18].y;
 
-  return dist < 0.06 && middleUp && ringUp && pinkyUp;
+  // Umbral para distancia pulgar-índice
+  if (dist >= 0.06) return false;
+
+  const THRESHOLD = 0.012;
+  // Los dedos medio, anular y meñique deben estar claramente extendidos
+  const middleUp = landmarks[12].y < landmarks[10].y - THRESHOLD;
+  const ringUp   = landmarks[16].y < landmarks[14].y - THRESHOLD;
+  const pinkyUp  = landmarks[20].y < landmarks[18].y - THRESHOLD;
+
+  return middleUp && ringUp && pinkyUp;
 }
 
+// ─── Etiquetar gesto para UI ────────────────────────────────────────
+function getGestureLabel(gesture) {
+  switch (gesture) {
+    case 'thumbs_up': return '👍 Reservar';
+    case 'thumbs_down': return '👎 Cancelar';
+    case 'open_hand': return '✋ Cancelar';
+    case 'victory':   return '✌️ Siguiente';
+    case 'pointing':  return '☝️ Seleccionar';
+    case 'ok':        return '👌 Confirmar';
+    case 'fist':      return '✊ Volver';
+    default: return '';
+  }
+}
+
+// ─── Ejecutar acción del gesto (tras confirmación) ──────────────────
 function handleGesture(gesture) {
-  console.log(`✋ Gesto detectado: ${gesture}`);
+  console.log(`✋ Gesto confirmado: ${gesture}`);
 
   switch (gesture) {
     case 'thumbs_up':
       showCommandFeedback('👍 Reservar plaza');
       actionReserve();
+      break;
+    case 'thumbs_down':
+      showCommandFeedback('👎 Cancelar');
+      actionCancel();
       break;
     case 'open_hand':
       showCommandFeedback('✋ Cancelar');
@@ -573,6 +743,7 @@ function handleGesture(gesture) {
     case 'victory':
       showCommandFeedback('✌️ Siguiente parking');
       navigateParking(1);
+      unlockProcessing();
       break;
     case 'ok':
       showCommandFeedback('👌 Confirmar');
@@ -585,17 +756,40 @@ function handleGesture(gesture) {
     case 'fist':
       showCommandFeedback('✊ Volver');
       actionGoBack();
+      unlockProcessing();
       break;
   }
 }
 
-function showGestureLabel(text) {
-  els.gestureLabel.textContent = text;
+// ─── UI del gesto ───────────────────────────────────────────────────
+function showGestureLabel(text, confidence) {
+  if (state.gestureCooldownActive) {
+    els.gestureLabel.textContent = '⏳ Espera...';
+    els.gestureLabel.classList.add('visible', 'cooldown');
+    return;
+  }
+  els.gestureLabel.textContent = confidence >= 1 ? `✅ ${text}` : text;
+  els.gestureLabel.classList.remove('cooldown');
   els.gestureLabel.classList.add('visible');
 }
 
 function hideGestureLabel() {
-  els.gestureLabel.classList.remove('visible');
+  els.gestureLabel.classList.remove('visible', 'cooldown');
+}
+
+function updateConfidenceBar(value) {
+  if (els.gestureConfidence) {
+    const pct = Math.min(value * 100, 100);
+    els.gestureConfidence.style.width = pct + '%';
+
+    if (value >= 1) {
+      els.gestureConfidence.className = 'confidence-fill ready';
+    } else if (state.gestureCooldownActive) {
+      els.gestureConfidence.className = 'confidence-fill cooldown';
+    } else {
+      els.gestureConfidence.className = 'confidence-fill';
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -620,17 +814,20 @@ function navigateParking(direction) {
 function actionReserve() {
   if (state.reservation) {
     speak('Ya tienes una reserva activa.');
+    unlockProcessing();
     return;
   }
 
   if (state.parkings.length === 0) {
     speak('Primero busca parkings.');
+    unlockProcessing();
     return;
   }
 
   const parking = state.parkings[state.currentParkingIndex];
   if (parking.freeSpots === 0) {
     speak(`${parking.name} no tiene plazas libres.`);
+    unlockProcessing();
     return;
   }
 
@@ -641,6 +838,7 @@ function actionReserve() {
 function actionConfirm() {
   if (!state.reservation) {
     speak('No tienes ninguna reserva para confirmar.');
+    unlockProcessing();
     return;
   }
   socket.emit('confirmReservation', { parkingId: state.reservation.parkingId });
@@ -655,6 +853,7 @@ function actionCancel() {
       return;
     }
     speak('No tienes ninguna reserva para cancelar.');
+    unlockProcessing();
     return;
   }
   socket.emit('cancelReservation', { parkingId: state.reservation.parkingId });
@@ -669,6 +868,7 @@ function actionUrgent() {
 function actionViewDetail() {
   if (state.parkings.length === 0) {
     speak('Primero busca parkings.');
+    unlockProcessing();
     return;
   }
   const parking = state.parkings[state.currentParkingIndex];
@@ -679,10 +879,12 @@ function actionViewDetail() {
 function actionGoBack() {
   if (els.viewReservation.classList.contains('active') && state.reservation) {
     speak('Tienes una reserva activa. Di cancelar para cancelarla.');
+    unlockProcessing();
     return;
   }
   showView('list');
   speak('Volviendo a la lista de parkings.');
+  unlockProcessing();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -873,10 +1075,12 @@ function stopReservationTimer() {
 }
 
 // ─── Feedback visual de comandos ────────────────────────────────────
+let feedbackTimeout = null;
 function showCommandFeedback(text) {
   els.commandText.textContent = text;
   els.commandFeedback.classList.add('visible');
-  setTimeout(() => els.commandFeedback.classList.remove('visible'), 2000);
+  if (feedbackTimeout) clearTimeout(feedbackTimeout);
+  feedbackTimeout = setTimeout(() => els.commandFeedback.classList.remove('visible'), 2500);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -907,12 +1111,5 @@ els.btnToggleCam.addEventListener('click', () => {
 // ═══════════════════════════════════════════════════════════════════
 // 7. INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════
-
-// Pedir la lista de parkings al conectarse
-socket.on('connect', () => {
-  setTimeout(() => {
-    socket.emit('requestParkingList');
-  }, 500);
-});
 
 console.log('🚗 SmartPark Conductor inicializado');
